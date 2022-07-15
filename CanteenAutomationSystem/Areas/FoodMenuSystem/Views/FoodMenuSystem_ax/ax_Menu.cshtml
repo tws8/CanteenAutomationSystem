@@ -1,0 +1,136 @@
+﻿@{ Layout = null; }
+@using System.Data;
+@model DataTable
+@using CanteenAutomationSystem.Include;
+@using CanteenAutomationSystem.Include;
+
+<style>
+    .list-item {
+        background-color: Transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+        height: 300px;
+    }
+</style>
+
+<div id="accordion">
+    <form id="form1">
+        <div class="card">
+            <div class="card-header" id="heading0" data-toggle="collapse" data-target="#collapse0" aria-expanded="false" aria-controls="collapse0" style="cursor:pointer;">
+                @{
+                    int iCount = 0, iCategory = 0;
+                    string sCategory = "", sID = "heading", sSubID = "collapse";
+                    bool bFirst = true;
+
+                    HtmlString htmlNewCategory;
+                    HtmlString htmlCloseDiv = new HtmlString("</div></div></div></div>");
+                    HtmlString htmlRow;
+
+                    foreach (DataRow row in Model.Rows)
+                    {
+                        if (iCount.Equals(4))
+                        {
+                            @htmlCloseDiv
+
+                            <br />
+                            <br />
+
+                            iCount = 0;
+                        }
+
+                        if (bFirst || (!string.IsNullOrEmpty(sCategory) && !sCategory.Equals(row["Category"])))
+                        {
+                            if (!bFirst)
+                            {
+                                iCategory++;
+                                htmlNewCategory = new HtmlString("<div class='card'><div class='card-header' id='" + sID + iCategory + "' data-toggle='collapse' data-target='#" + sSubID + iCategory + "' aria-expanded='false' aria-controls='" + sSubID + iCategory + "' style='cursor:pointer;'>");
+
+                                @htmlCloseDiv
+                                @htmlNewCategory
+                            }
+
+                            <h5 class="mb-0">
+                                <i class="pe-7s-angle-up-circle" style="color:#3d68e0;font-size:16px;"></i>
+                                <font style="color:#3d68e0;font-size:16px;">
+                                    @row["Category"]
+                                </font>
+                            </h5>
+
+                            htmlRow = new HtmlString("</div><div id='" + sSubID + iCategory + "' class='collapse show' aria-labelledby='" + sID + iCategory + "' data-parent='#accordion'><div class='card-body'><div class='position-relative row form-group'>");
+                            @htmlRow
+
+                            bFirst = false;
+                            iCount = 0;
+                        }
+
+                        <div class="col-lg-3 col-sm-6">
+                            <button class="list-item" type="button" id="btn_@row["FoodID"]" style="border:1px solid black; width:100%" onclick="window.location = '@Url.Action("MenuJS", null, new { area = "FoodMenuSystem", controller = "FoodMenuSystem" })?FoodID=@row["FoodID"]' + '&type=E'">
+                                <br />
+                                <img class="col-sm-12" id="img_@row["FoodID"]" style="height:150px; width:100%;" src="@row["Url"]" onerror="fNoImg('img_@row["FoodID"]', 'btn_@row["FoodID"]')" />
+                                <p>@row["FoodDesc"]</p>
+                                <var style="float:left; font-style:normal">@TempData["gCURR"] @row["FoodPrice"]</var><br />
+                                <var style="float:left; font-style:normal">@row["FoodRem"]</var>
+                            </button>
+
+                            @if (Session["_USERTYPE"].ToString().Equals("C"))
+                            {
+                                <br />
+                                <br />
+
+                                <div class="position-relative row form-group">
+                                    @if (row["Status"].ToString().Equals("A"))
+                                    {
+                                        <div class="input-group">
+                                            <button class="popup btn btn-sm btn-danger text-white input-group-prepend" type="button" style="border:none; margin-left:5px" onclick="fMinus('txtQUANTITY_@row["FoodID"]')">
+                                                <i class="pe-7s-less icons" style="font-size: 30px; text-align:center; align-items:center"></i>
+                                            </button>
+                                            <input type="text" id="txtQUANTITY_@row["FoodID"]" name="QUANTITY_@row["FoodID"]" value="@row["FoodCurOrdQty"]" class="form-control Qty" style="text-align:center" readonly>
+                                            <button class="popup btn btn-sm btn-success text-white input-group-prepend" type="button" style="border:none; margin-right:5px" onclick="fAdd('txtQUANTITY_@row["FoodID"]')">
+                                                <i class="metismenu-icon pe-7s-plus icons" style="font-size: 30px;"></i>
+                                            </button>
+                                        </div>
+                                    }
+                                    else if (row["Status"].ToString().Equals("I"))
+                                    {
+                                        <label class="col-sm-12 col-form-label" style="text-align:center; color:orange">Temporarily unavailable</label>
+                                    }
+                                    else if (row["Status"].ToString().Equals("D"))
+                                    {
+                                        <label class="col-sm-12 col-form-label" style="text-align:center; color:red">No longer available</label>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                
+                                <br />
+                                <br />
+
+                                <div class="position-relative row form-group">
+                                    @if (row["Status"].ToString().Equals("A"))
+                                    {
+                                        <label class="col-sm-12 col-form-label" style="text-align:center; color:green">Available</label>
+                                    }
+                                    else if (row["Status"].ToString().Equals("I"))
+                                    {
+                                        <label class="col-sm-12 col-form-label" style="text-align:center; color:orange">Temporarily unavailable</label>
+                                    }
+                                    else if (row["Status"].ToString().Equals("D"))
+                                    {
+                                        <label class="col-sm-12 col-form-label" style="text-align:center; color:red">No longer available</label>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        sCategory = Proc.pConvStr(row["Category"]);
+                        iCount++;
+                    }
+                }
+            </div>
+        </div>
+    </form>
+</div>

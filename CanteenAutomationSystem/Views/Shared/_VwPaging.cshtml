@@ -1,0 +1,52 @@
+﻿@*
+    1.Passing PAGE by URL to ax_Controller
+    2.HidPage used
+*@
+
+<form name="form2">
+    <input type="hidden" id="HidPage" value="@TempData["PAGE"]">
+</form>
+<div class="row">
+    <div class="col-sm-5" style="margin-top:5px;">
+        Total Record (@TempData["TOTITEM"]) @TempData["PAGE"] / @TempData["TOTPAGE"]
+    </div>
+    <div class="col-sm-7">
+        <div class="dataTables_paginate" style="float:right">
+            <ul class="pagination">
+                @if ((int)@TempData["PAGE"] > 1)
+                {
+                    int ipage = (int)TempData["PAGE"] - 1;
+
+                    <li class="paginate_button"><a href="javascript:showContent('page=1');" class="btn btn-sm"><< First</a></li>
+                    <li class="paginate_button"><a href="javascript:showContent('page=@ipage');" class="btn btn-sm">< Back</a></li>
+                }
+
+                @for (int i = 1; i <= (int)TempData["TOTPAGE"]; i++)
+                {
+                    if (i >= ((int)TempData["PAGE"] - 3) && (i <= (int)TempData["PAGE"] + 3))
+                    {
+                        if (i == (int)TempData["PAGE"])
+                        {
+                            <li class="paginate_button active"><a href="#" class="btn btn-sm">@i</a></li>
+                        }
+                        else
+                        {
+                            <li class="paginate_button"><a href="javascript:showContent('page=@i');" class="btn btn-sm">@i</a></li>
+                        }
+
+                    }
+
+                }
+
+                @if ((int)@TempData["PAGE"] < (int)@TempData["TOTPAGE"])
+                {
+                    int ipage = (int)TempData["PAGE"] + 1;
+
+                    <li class="paginate_button"><a href="javascript:showContent('page=@ipage');" class="btn btn-sm">Next ></a></li>
+                    <li class="paginate_button"><a href="javascript:showContent('page=@TempData["TOTPAGE"]');" class="btn btn-sm">Last >></a></li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</div>

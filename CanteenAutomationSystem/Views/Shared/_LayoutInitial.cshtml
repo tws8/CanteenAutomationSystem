@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title - Canteen Automation System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" href="~/main.css" />
+    <link rel="stylesheet" href="~/Style/Asap.css" />
+    <link rel="stylesheet" href="~/Style/common.css" />
+
+    <script src="~/assets/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/assets/scripts/main.js"></script>
+
+    @RenderSection("Scripts", false)
+    <style>
+
+        /* Add some padding on document's body to prevent the content
+
+        to go underneath the header and footer */
+
+        body {
+            background-color: #eeeeee;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .fixed-footer {
+            width: 100%;
+            position: fixed;
+            background: #16aaff;
+            padding: 10px 0;
+            color: #fff;
+        }
+
+        .fixed-header {
+            top: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto; /* Center the DIV horizontally */
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 7px 25px;
+            display: inline-block;
+        }
+
+        .form-control {
+            border-radius: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-header">
+        <div class="container">
+        </div>
+    </div>
+
+    @RenderBody()
+
+</body>
+</html>

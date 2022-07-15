@@ -1,0 +1,146 @@
+﻿@{
+    ViewBag.Title = "Food Menu System";
+}
+
+<div class="row pb-3">
+    <div class="col-md-6">
+        <h4><b>Food Menu System</b></h4>
+    </div>
+    <div class="col-md-6 text-right">
+        @if (Session["_USERTYPE"].ToString().Equals("C"))
+        {
+            if (!TempData["ACTORDER"].ToString().Equals("Y"))
+            {
+                <a class="popup btn btn-sm btn-success text-white" id="btn_build" style="float:right; border-radius:5px; margin-left:5px">
+                    <i class="fa fa-shopping-cart"></i> Build Order
+                </a>
+
+                TempData["ACTORDER"] = "N";
+            }
+            else
+            {
+                <a class="popup btn btn-sm btn-success text-white mr-1" id="btn_update" style="float:right; border-radius:5px;">
+                    <i class="fa fa-shopping-cart"></i> Update Order
+                </a>
+
+                using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
+                {
+                    string sUserName = CanteenAutomationSystem.Include.Proc.pConvStr(Session["_USERNAME"]);
+                    if (context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.Status.Equals("A")).Any())
+                    {
+                        <a href="@Url.Action("OrderJS", null, new { area = "FoodOrderingSystem", controller = "FoodOrderingSystem" })?OrderID=@context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.Status.Equals("A")).Select(x => x.OrderID).First()&type=E" class="popup btn btn-sm btn-info text-white mr-1" style="float:right; border-radius:5px;border:1px solid #c2d6d6;">
+                            <i class="fa fa-external-link"></i>
+                            Proceed to the Current Order
+                        </a>
+                    }
+                }
+
+                TempData["ACTORDER"] = "Y";
+            }
+
+            <a class="popup btn btn-sm btn-warning text-white mr-1" style="float:right; border-radius:5px;" onclick="fResetAllToZero('Reset All Quantity', 'Qty', '#form1', '')">
+                <i class="fa fa-refresh fa-spin"></i> Reset All Quantity
+            </a>
+        }
+        else
+        {
+            <a class="popup btn btn-sm btn-success text-white" style="float:right; border-radius:5px; margin-left:5px" onclick="goto('FoodMenuSystem/FoodMenuSystem/MenuJS')">
+                <i class="fa fa-plus"></i> Add New Food
+            </a>
+        }
+    </div>
+</div>
+
+@*
+    @if (TempData["ACTORDER"].ToString().Equals("Y"))
+    {
+        if (!string.IsNullOrEmpty(TempData["MSG"].ToString()))
+        {
+            <input type="hidden" id="msg" value="@TempData["MSG"]"/>
+        }
+    }
+*@
+
+<div class="tab-content">
+    <div class="col-xs-12">
+        <div class="tab-pane tabs-animation fade active show" id="tab-content-0" role="tabpanel">
+            <div id="VwContent">
+                <!-- CONTENT HERE -->
+            </div>
+            <br />
+        </div>
+    </div>
+</div>
+
+<script>
+    window.applicationBaseUrl = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+    new Uri(new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+    Url.Content("~/")).ToString(), true));
+
+    $(document).ready(function () {
+        showContent();
+
+        /*
+        if (document.getElementById("msg")) {
+            Swal.fire({ icon: 'success', title: document.getElementById("msg").value, showConfirmButton: false, timer: 15000 })
+                .then(function () {
+                    window.location = window.applicationBaseUrl + pBackUrl
+                    resolve("Y"); //Return as onSuccess
+                    return false;
+                });
+        }
+        */
+    });
+
+    function showContent() {
+        document.getElementById("VwContent").innerHTML = "";
+
+        axios.get(window.applicationBaseUrl + "/FoodMenuSystem/FoodMenuSystem_ax/ax_Menu")
+            .then((response) => {
+                document.getElementById("VwContent").innerHTML = response.data;
+                return false;
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+                document.getElementById("VwContent").innerHTML = "";
+                return false;
+            })
+    }
+
+    function goto(pUrl) {
+        window.location = window.applicationBaseUrl + pUrl + "?type=N";
+    }
+
+    function fAdd(str) {
+        document.getElementById(str).value = parseFloat(document.getElementById(str).value) + 1;
+    }
+
+    function fMinus(str) {
+        if (parseFloat(document.getElementById(str).value) > 0) {
+            document.getElementById(str).value = parseFloat(document.getElementById(str).value) - 1;
+        }
+    }
+
+    function fNoImg(img, btn) {
+        this.onerror = null;
+        document.getElementById(img).style.display = "none";
+
+        var input = document.createElement("input");
+        input.type = "text";
+        input.className = "col-sm-12";
+        input.style.height = "150px";
+        input.disabled = true;
+        document.getElementById(btn).prepend(input);
+    }
+
+    $("#btn_build").click(function () {
+        fCRUD('Build', '', 'FoodMenuSystem/FoodMenuSystem/BuildOrder', "#form1", 'FoodMenuSystem/FoodMenuSystem/MenuListing');
+        return false;
+    });
+
+    $("#btn_update").click(function () {
+        fCRUD('Update', '', 'FoodMenuSystem/FoodMenuSystem/UpdateOrder', "#form1", 'FoodMenuSystem/FoodMenuSystem/MenuListing');
+        return false;
+    });
+</script>

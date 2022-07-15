@@ -1,0 +1,88 @@
+﻿@model CanteenAutomationSystem.Areas.MyInfo.Models.MyProfile
+
+<div class="tab-content">
+    <div class="tab-pane tabs-animation fade active show" id="tab-content-0" role="tabpanel">
+        <form id="form1" style="font-size:13px;" autocomplete="@TempData["gAUTOFILL"]">
+            <div class="row pb-3">
+                <div class="col-md-6"><h4><b>New Business User Profile</b></h4></div>
+                <div class="col-md-6">
+
+                    <button class="btn btn-sm btn-success mr-1" id="btn_add" style="float:right; border-radius:5px;">
+                        <i class="fas fa-save"></i>
+                        Add New Business User
+                    </button>
+
+                    <a href="@Url.Action("Index", null, new { area = "", controller = "Home" })" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">
+                        <i class="fa fa-undo"></i>
+                        Back
+                    </a>
+                </div>
+            </div>
+
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">ID :</label>
+                        <div class="col-xl-3 col-lg-4 col-md-10 col-sm-12">
+                            <input type="text" id="txtID" name="ID" value="@Model.ID" class="form-control sRead">
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Name :</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <input type="text" id="txtNAME" name="NAME" value="@Model.NAME" class="form-control" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Tel :</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <input type="text" id="txtTEL" name="TEL" value="@Model.TEL" class="form-control" maxlength="15">
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Email :</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <input type="text" id="txtEMAIL" name="EMAIL" value="@Model.EMAIL" class="form-control" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Department :</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <select class="form-control sRead" id="txtDEPT" name="DEPT" readonly>
+                                @foreach(var dictDept in ViewData["DEPT"] as IDictionary<string, string>)
+                                {
+                                    <option value="@dictDept.Key" @(Session["_USERTYPE"].ToString() == dictDept.Key ? "selected" : "")>@dictDept.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <input type="text" value="Initial Password will be same as User ID" class="form-control" style="border:none">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+     window.applicationBaseUrl = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+    new Uri(new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+        Url.Content("~/")
+    ).ToString(), true));
+
+    $(document).ready(function () {
+        //Set Textbox to to Readonly
+        if (txtID.value != "") {
+            $(".sRead").prop("readonly", true);
+        }
+    });
+
+    $("#btn_add").click(function () {
+        fCRUD('Add', 'MyInfo/MyProfile/MyNewBizUser_Chk', 'MyInfo/MyProfile/MyNewBizUser', "#form1", 'MyInfo/MyProfile/MyNewBizUser');
+        return false;
+    });
+
+</script>

@@ -1,0 +1,80 @@
+﻿@model CanteenAutomationSystem.Variables.NewUser
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container mt-5">
+        <div class="row mt-5" style="max-width: 360px;margin: 7% auto;">
+            <div class="col-sm-12" style="background-color:white;">
+                <div class="form-horizontal mt-4 mb-4">
+                    <div class="col-md-12">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <center>
+                            <h2><b>@Session["_SYS_NAME_SHORT"]</b></h2>
+                            <p>Register as New Customer User</p>
+                        </center>
+
+                        <br>
+                        <div class="form-group">
+                            <label style="margin-left:15px;">ID </label>
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.ID, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus", maxlength = "15", onchange = "this.value = this.value.toUpperCase()", onkeyup = "this.value = this.value.toUpperCase()" } })
+                                @Html.ValidationMessageFor(model => model.ID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="margin-left:15px;">Name </label>
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="margin-left:15px;">Password </label>
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.PASSWORD, new { htmlAttributes = new { @class = "form-control", maxlength = "30" } })
+                                @Html.ValidationMessageFor(model => model.PASSWORD, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="margin-left:15px;">Tel </label>
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.TEL, new { htmlAttributes = new { @class = "form-control", maxlength = "15" } })
+                                @Html.ValidationMessageFor(model => model.TEL, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="margin-left:15px;">Email </label>
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.EMAIL, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-12">
+                                <input style="float:left; border-radius:0px" type="button" value="Back" class="btn btn-light" onclick="window.location.assign('Login')" />
+                                <input style="float:right; border-radius:0px" type="submit" value="Sign Up" class="btn btn-success" />
+                                <br>
+                            </div>
+                        </div>
+
+                        @if (ViewBag.Message != "")
+                        {
+                            <br />
+
+                            <div class="form-group">
+                                <div class="text-danger" style="margin-left:15px;">@ViewBag.Message</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

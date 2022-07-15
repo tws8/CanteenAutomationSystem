@@ -1,0 +1,494 @@
+﻿@model CanteenAutomationSystem.Areas.FoodMenuSystem.Models.FoodMenu
+
+@Html.Partial("MenuHeader")
+
+@if (!Session["_USERTYPE"].ToString().Equals("C") && !Request.QueryString["type"].ToString().Equals("N"))
+{
+    @Html.Partial("MenuContent")
+}
+
+<script>
+    window.applicationBaseUrl = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+    new Uri(new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+        Url.Content("~/")
+    ).ToString(), true));
+
+    //First time page load
+    $(document).ready(function () {
+        //# Date picker
+        $("[date-picker]").datepicker({
+            format: "dd/mm/yyyy",
+            autoclose: true
+        })
+        $('.datepicker').addClass('DtPickerFormat');
+
+        //# Edit Record
+        if (HidID.value != "") {
+            //## Set Text box readonly
+            $(".sRead").prop("readonly", true);
+            $(".sReadbtn").hide();
+
+            //Show Details
+            fForm2_ShowList('page=1');
+        }
+    });
+
+    $('#btnDATE').click(function () {
+        $('#dtpDATE').datepicker("show");
+    });
+
+    //#region Interface JS
+
+    //# Card _Header Onclick
+    //  Show or Hide
+    $('#Card_Header_HD').click(function () {
+        var $this = $("#chk_HD");
+        if ($this.is(":checked")) {
+            $("#Card_Body_HD").show();
+            $this.prop("checked", false);
+        } else {
+            $("#Card_Body_HD").hide();
+            $this.prop("checked", true);
+        }
+    })
+
+    //# Card _D1 Onclick
+    //  Show or Hide
+    $('#Card_Header_D1').click(function () {
+        var $this = $("#chk_D1");
+
+        $('html,body').animate({ scrollTop: $("#Card_D1").offset().top }, 'slow');
+
+        if ($this.is(":checked")) {
+            $("#card_content").show();
+            $this.prop("checked", false);
+        } else {
+            $("#card_content").hide();
+            $this.prop("checked", true);
+        }
+    })
+
+    //# Show New D1 Form
+    $('#btnD1_Add').click(function () {
+        fNewRecord("FoodMenuSystem/FoodMenuSystem/NewRecFoodMenu", @Model.ID, "FoodDetID");
+        fForm2_ShowDet(txtID.value, "");
+    })
+
+    //# Hide D1 Form
+    $('#btnD1_Cancel').click(function () {
+        fForm2_FmtShow("");
+    })
+
+    //#endregion
+
+    //#region Modal View JS
+    function fOpen(pType, pFldName, pContent, pModal) {
+        document.getElementById(pContent).innerHTML = "";
+        fShowDetails('1', pFldName, pType, pContent, pModal);
+        $(pModal).modal();
+    }
+
+    function fShowDetails(pPage, pFldName, pType, pContent, pModal) {
+        var txtSearchView = document.getElementById("txtSearchView");
+        var Url = "";
+        var pSearch = "";
+        var pCondition = false;
+        ;
+        //Search Form Value
+        if (txtSearchView != null && txtSearchView.value != "") {
+            pSearch = txtSearchView.value;
+        }
+
+        if (pType == "INGREDIENT") {
+            Url = "/SearchForm/ax_view_Ingredient";
+        }
+
+        axios.get(window.applicationBaseUrl + Url, { params: { pPage, pFldName, pType, pContent, pModal, pSearch, pCondition } })
+            .then((response) => {
+                document.getElementById(pContent).innerHTML = response.data;
+                return false;
+            })
+    }
+
+    function fGetValue1(pValue, pFldName, pContent, pModal, pType) {
+        document.getElementById(pFldName).value = pValue;
+        $(pModal).modal('hide');
+        $(pContent).empty();
+
+        //get Value
+        fCallAjax(pType, pValue);
+    }
+
+    function fCallAjax(pType, svalue) {
+
+        if (pType == "INGREDIENT") {
+            _INGREDIENT(svalue);
+        }
+    }
+
+    //#endregion
+
+    //#region Call Ajax Get Value
+
+    function _INGREDIENT(sIngredientID) {
+        axios.get(window.applicationBaseUrl + '/FoodMenuSystem/FoodMenuSystem/_INGREDIENT', { params: { sIngredientID } }).then(res => {
+            $(res.data).each(function () {
+                IngredientDesc.value = this.str1;
+                IngredientQty.value = this.int1;
+            });
+        });
+        return false;
+    }
+
+    function _Form1_TOTAL() {
+        iID = HidID.value;
+
+        axios.get(window.applicationBaseUrl + '/Transaction/Te01/_FM1_TOTAL', { params: { iID } }).then(res => {
+            $(res.data).each(function () {
+                txtFAMOUNT.value = fFormatDec(this.dec1, HidDOL.value);
+                txtDFAMOUNT.value = fFormatDec(this.dec1, HidDOL.value);    //Lew Add 16/12/2020
+                $("#lblFAMOUNT").text(fFormatDec(this.dec1, HidDOL.value));
+                txtTOTAMT.value = fFormatDec(this.dec2, HidDOL.value);
+                txtDTOTAMT.value = fFormatDec(this.dec2, HidDOL.value);     //Lew Add 16/12/2020
+                $("#lblTOTAMT").text(fFormatDec(this.dec2, HidDOL.value));
+
+                //=================================
+                fMeCal();   //Recalculate
+            });
+            return false;
+        });
+    }
+
+    //#endregion
+
+    //#region Form1
+    $("#btn_save").click(function () {
+        const result = fSave(HidSUB, 'Transaction/Te01/Te01Det_Chk', 'Transaction/Te01/Te01Det', "#form1", '');
+
+        result.then(
+            function onSuccess(result) {
+
+                //# Button Show/Hide
+                $("#btn_save").hide();
+                $("#btn_group").show();
+                $("#btn_update").show();
+
+                //# Set text box readonly
+                $(".sRead").prop("readonly", true);
+                $(".sReadbtn").hide();
+
+                //# Show Details
+                fForm2_ShowList('page=1');
+
+                //# Result will return ["Y"] or [new REFNO] only
+                if (result != "Y") {
+                    //## Update New Refno to Header
+                    txtID.value = result;
+                }
+
+                //# Update Hidden Value
+                HidID.value = txtID.value;
+
+            }
+            , function onError(err) {
+                //# Handle error
+                console.log(err);
+                return false;
+            });
+        return false;
+    });
+    //#endregion
+
+    //#region Form2
+    function fForm2_ShowList(str) {
+        //## Show Card
+        $("#Card_D1").show();
+
+        showContent("page=1", "ax_FoodDet");
+
+        fForm2_FmtShow("");
+        return false;
+    }
+
+    async function fForm2_ShowDet(iID, iNUM) {
+        if (iNUM != "") {
+            await axios.get(window.applicationBaseUrl + '/FoodMenuSystem/FoodMenuSystem/MenuContent?iID=' + iID + '&iNUM=' + iNUM).then(res => {
+                $(res.data).each(function () {
+                    HidD1_ID.value = this.ID;
+                    FoodDetID.value = this.FOODDETID;
+                    IngredientID.value = this.INGREDIENTID;
+                    IngredientDesc.value = this.INGREDIENTDESC;
+                    IngredientQty.value = fFormatDec(this.INGREDIENTQTY, 0);
+
+                });
+            });
+        } else {
+            HidD1_ID.value = "";
+            IngredientID.value = "";
+            IngredientDesc.value = "";
+            IngredientQty.value = fFormatDec(0, 0);
+        }
+
+        fForm2_FmtShow("SHOW");
+
+        //# Format Form2 Input
+        fForm2_Format();
+
+        return false;
+    }
+
+    $("#btnD1_Save").click(function () {
+        iID = txtID.value;
+        iNUM = FoodDetID.value;
+        iSubID = IngredientID.value;
+        axios.post(window.applicationBaseUrl + '/FoodMenuSystem/FoodMenuSystem/AddIngredient_Chk', { iID, iNUM, iSubID })
+            .then((response) => {
+                if (response.data == "OK") {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You wanna to Add Num :" + iNUM,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes'
+                    }).then((result) => {
+                        if (result.value) {
+
+                            axios.post(window.applicationBaseUrl + '/FoodMenuSystem/FoodMenuSystem/AddIngredient?iID=' + iID, $("#form2").serialize())
+                                .then((response) => {
+                                    if (response.data == "OK") {
+                                        Swal.fire('Add!', 'Add Done.', 'success');
+
+                                        //# Refresh Detail Listing
+                                        fForm2_ShowList('page=1');
+
+                                        //# Refresh Header Total Amt
+                                        _Form1_TOTAL();
+                                        return false;
+
+                                    } else {
+                                        Swal.fire('Failed!', response.data[0].ErrorMessage, 'error');
+                                        return false;
+                                    }
+                                })
+                        }
+                    })
+
+                }
+                else if (response.data == "E101") {
+                    window.location = window.applicationBaseUrl + gUrl_E101;
+                    return false;
+                }
+                else {
+                    Swal.fire('Failed!', response.data[0].ErrorMessage, 'error');
+                    return false;
+                }
+            })
+        return false;
+    });
+
+    $("#btnD1_Update").click(function () {
+        fChkAuthoz(); //Authorize User Login Status
+
+        iID = txtID.value;
+        iNUM = FoodDetID.value;
+        iSubID = IngredientID.value;
+        axios.post(window.applicationBaseUrl + '/FoodMenuSystem/FoodMenuSystem/UpdateIngredient_Chk', { iID, iNUM, iSubID })
+            .then((response) => {
+                if (response.data == "OK") {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You wanna to Update Num :" + iNUM,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes'
+                    }).then((result) => {
+                        if (result.value) {
+
+                            axios.post(window.applicationBaseUrl + '/FoodMenuSystem/FoodMenuSystem/UpdateIngredient', $("#form2").serialize())
+                                .then((response) => {
+                                    if (response.data == "OK") {
+                                        Swal.fire('Update!', 'Update Done.', 'success');
+
+                                        //# Refresh Detail Listing
+                                        fForm2_ShowList('page=1');
+
+                                        //# Refresh Header Total Amt
+                                        _Form1_TOTAL();
+                                        return false;
+
+                                    } else {
+                                        Swal.fire('Failed!', response.data[0].ErrorMessage, 'error');
+                                        return false;
+                                    }
+                                })
+                        }
+                    })
+
+                }
+                else if (response.data == "E101") {
+                    window.location = window.applicationBaseUrl + gUrl_E101;
+                    return false;
+                }
+                else {
+                    Swal.fire('Failed!', response.data[0].ErrorMessage, 'error');
+                    return false;
+                }
+            })
+        return false;
+    });
+
+    function fForm2_Del(iID, iNUM, iSubID) {
+        fChkAuthoz(); //Authorize User Login Status
+
+        axios.post(window.applicationBaseUrl + '/FoodMenuSystem/FoodMenuSystem/UpdateIngredient_Chk', { iID, iNUM, iSubID })
+            .then((response) => {
+                if (response.data == "OK") {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You wanna to Delete Num :" + iNUM,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes'
+                    }).then((result) => {
+                        if (result.value) {
+
+                            axios.post(window.applicationBaseUrl + '/FoodMenuSystem/FoodMenuSystem/DeleteIngredient', { iID, iNUM, iSubID })
+                                .then((response) => {
+                                    if (response.data == "OK") {
+                                        Swal.fire('Delete!', 'Delete Done.', 'success');
+
+                                        //# Refresh Detail Listing
+                                        fForm2_ShowList('page=1');
+
+                                        //# Refresh Header Total Amt
+                                        _Form1_TOTAL();
+                                        return false;
+
+                                    } else {
+                                        Swal.fire('Failed!', response.data[0].ErrorMessage, 'error');
+                                        return false;
+                                    }
+                                })
+                        }
+                    })
+
+                }
+                else if (response.data == "E101") {
+                    window.location = window.applicationBaseUrl + gUrl_E101;
+                    return false;
+                }
+                else {
+                    Swal.fire('Failed!', response.data[0].ErrorMessage, 'error');
+                    return false;
+                }
+            })
+        return false;
+    }
+
+    function fForm2_Format() {
+        //# FORM2 Hide/Show
+        fForm2_FmtShow("SHOW");
+    }
+
+    function fForm2_FmtShow(status) {
+        if (status == "SHOW") {
+            if (!fChkStr(HidD1_ID.value)) {
+                //[EDIT]
+                $('#btnD1_Add').hide();
+                $("#btnD1_Cancel").show();
+                $("#btnD1_Save").hide();
+                $("#btnD1_Update").show();
+            } else {
+                //[NEW]
+                $('#btnD1_Add').hide();
+                $("#btnD1_Cancel").show();
+                $("#btnD1_Save").show();
+                $("#btnD1_Update").hide();
+            }
+            $("#form_content").show();
+            $('html,body').animate({ scrollTop: $("#Card_D1").offset().top }, 'slow');
+        } else {
+            $('#btnD1_Add').show();
+            $("#btnD1_Cancel").hide();
+            $("#btnD1_Save").hide();
+            $("#btnD1_Update").hide();
+
+            $("#form_content").hide();
+        }
+    }
+    //#endregion
+
+    function fMeCal(sControl) {
+
+        //# Assign Value to Variable
+        var TOTAMT = fRound(txtTOTAMT.value, HidDOL.value);
+        var DUTY = fRound(txtDUTY.value, HidDOL.value);
+        var CHARGES = fRound(txtCHARGES.value, HidDOL.value);
+        var FWDCHG = fRound(txtFWDCHG.value, HidDOL.value);
+        var HAULAGE = fRound(txtHAULAGE.value, HidDOL.value);
+        var FREIGHT = fRound(txtFREIGHT.value, HidDOL.value);
+        var FAMOUNT = fRound(txtFAMOUNT.value, HidDOL.value);
+        var NETTOT = fRound(txtNETTOT.value, HidDOL.value);
+        var RATE = fRound(txtRATE.value, 4);
+
+        TOTAMT = FAMOUNT * RATE;
+        NETTOT = TOTAMT + DUTY + CHARGES + FWDCHG + HAULAGE + (FREIGHT * RATE);
+
+        //# Assign Final Result to Input box
+        txtTOTAMT.value = fFormatDec(TOTAMT, HidDOL.value);
+        txtDTOTAMT.value = fFormatDec(TOTAMT, HidDOL.value);        //Lew Add 16/12/2020
+        $("#lblTOTAMT").text(fFormatDec(TOTAMT, HidDOL.value));
+
+        txtNETTOT.value = fFormatDec(NETTOT, HidDOL.value);
+        txtDNETTOT.value = fFormatDec(NETTOT, HidDOL.value);        //Lew Add 16/12/2020
+        $("#lblNETTOT").text(fFormatDec(NETTOT, HidDOL.value));
+    }
+
+    function showContent(str, axName) {
+
+        vwContent = document.getElementById("VwContent_Detail");
+
+        str = str + "&sRefNo=" + txtID.value;
+
+        axios.get(window.applicationBaseUrl + "/FoodMenuSystem/FoodMenuSystem_ax/" + axName + "?" + str)
+            .then((response) => {
+                vwContent.innerHTML = response.data;
+                return false;
+            })
+            .catch(function (error) {
+                vwContent.innerHTML = "";
+                return false;
+            })
+    }
+
+    $("#btn_add").click(function () {
+        fCRUD('Add', 'FoodMenuSystem/FoodMenuSystem/AddFood_Chk', 'FoodMenuSystem/FoodMenuSystem/AddFood', "#form1", 'FoodMenuSystem/FoodMenuSystem/MenuJS?FoodID=@Model.ID&type=E');
+        return false;
+    });
+
+    $("#btn_update").click(function () {
+        fCRUD('Update', 'FoodMenuSystem/FoodMenuSystem/UpdateFood_Chk', 'FoodMenuSystem/FoodMenuSystem/UpdateFood', "#form1", 'FoodMenuSystem/FoodMenuSystem/MenuJS?FoodID=@Model.ID&type=E');
+        return false;
+    });
+
+    $("#btn_delete").click(function () {
+        fCRUD('Delete', 'FoodMenuSystem/FoodMenuSystem/UpdateFood_Chk', 'FoodMenuSystem/FoodMenuSystem/DeleteFood', "#form1", 'FoodMenuSystem/FoodMenuSystem/MenuJS?FoodID=@Model.ID&type=E');
+        return false;
+    });
+
+    $("#btn_load").click(function () {
+        fCRUD('Update', 'FoodMenuSystem/FoodMenuSystem/UpdateFood_Chk', 'FoodMenuSystem/FoodMenuSystem/OnFood', "#form1", 'FoodMenuSystem/FoodMenuSystem/MenuJS?FoodID=@Model.ID&type=E');
+        return false;
+    });
+
+    $("#btn_unload").click(function () {
+        fCRUD('Update', 'FoodMenuSystem/FoodMenuSystem/UpdateFood_Chk', 'FoodMenuSystem/FoodMenuSystem/OffFood', "#form1", 'FoodMenuSystem/FoodMenuSystem/MenuJS?FoodID=@Model.ID&type=E');
+        return false;
+    });
+</script>

@@ -1,0 +1,54 @@
+﻿@model CanteenAutomationSystem.Areas.MyInfo.Models.MyPw
+
+<div class="tab-content">
+    <div class="tab-pane tabs-animation fade active show" id="tab-content-0" role="tabpanel">
+        <form id="form1" style="font-size:13px;" autocomplete="@TempData["gAUTOFILL"]">
+            <div class="row pb-3">
+                <div class="col-md-6"><h4><b>My Password</b></h4></div>
+                <div class="col-md-6">
+
+                    <button class="btn btn-sm btn-success" id="btn_update" style="float:right; border-radius:5px;width:80px;">
+                        <i class="fas fa-save"></i>
+                        Update
+                    </button>
+
+                    <a href="@Url.Action("Index", null, new { area = "", controller = "Home" })" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">
+                        <i class="fa fa-undo"></i>
+                        Back
+                    </a>
+                </div>
+            </div>
+
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Password:</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <input type="password" id="txtPASSWORD" name="PASSWORD" value="@Model.PASSWORD" class="form-control" maxlength="12">
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Confirm Password:</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <input type="password" id="txtCPASSWORD" name="CPASSWORD" value="@Model.CPASSWORD" class="form-control" maxlength="12">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+     window.applicationBaseUrl = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+    new Uri(new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+        Url.Content("~/")
+    ).ToString(), true));
+
+    $("#btn_update").click(function () {
+        fCRUD('Update', 'MyInfo/MyProfile/MyPw_Chk', 'MyInfo/MyProfile/MyPw', "#form1", 'MyInfo/MyProfile/MyPw');
+        return false;
+    });
+
+</script>
+

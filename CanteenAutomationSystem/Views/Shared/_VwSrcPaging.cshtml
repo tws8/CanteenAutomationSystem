@@ -1,0 +1,56 @@
+﻿@using CanteenAutomationSystem.Include;
+@{
+    string pFldName = Proc.pConvStr(ViewData["fldName"]);
+    string pType = Proc.pConvStr(ViewData["pType"]);
+    string pContent = "content_modal";
+    string pModal = "#exampleModal";
+}
+
+@*
+    1.Passing PAGE by parameter to SearchController
+    2.No HidPage used
+*@
+
+<div class="row">
+    <div class="col-sm-5" style="margin-top:5px;">
+        Total Record (@TempData["TOTITEM"]) @TempData["PAGE"] / @TempData["TOTPAGE"]
+    </div>
+    <div class="col-sm-7">
+        <div class="dataTables_paginate" style="float:right">
+            <ul class="pagination">
+                @if ((int)TempData["PAGE"] > 1)
+                {
+                    int ipage = (int)TempData["PAGE"] - 1;
+                    <li class="paginate_button"><a href="javascript:fShowDetails('1','@pFldName','@pType','@pContent','@pModal');" class="btn btn-sm"><< First</a></li>
+                    <li class="paginate_button"><a href="javascript:fShowDetails('@ipage','@pFldName','@pType','@pContent','@pModal');" class="btn btn-sm">< Back</a></li>
+                }
+
+                @for (int i = 1; i <= (int)TempData["TOTPAGE"]; i++)
+                {
+                    if (i >= ((int)TempData["PAGE"] - 3) && (i <= (int)TempData["PAGE"] + 3))
+                    {
+                        if (i == (int)TempData["PAGE"])
+                        {
+                            <li class="paginate_button active"><a href="#" class="btn btn-sm">@i</a></li>
+                        }
+                        else
+                        {
+                            <li class="paginate_button"><a href="javascript:fShowDetails('@i','@pFldName','@pType','@pContent','@pModal');" class="btn btn-sm">@i</a></li>
+                        }
+
+                    }
+
+                }
+
+                @if ((int)@TempData["PAGE"] < (int)TempData["TOTPAGE"])
+                {
+                    int ipage = (int)TempData["PAGE"] + 1;
+
+                    <li class="paginate_button"><a href="javascript:fShowDetails('@ipage','@pFldName','@pType','@pContent','@pModal');" class="btn btn-sm">Next ></a></li>
+                    <li class="paginate_button"><a href="javascript:fShowDetails('@TempData["TOTPAGE"]','@pFldName','@pType','@pContent','@pModal');" class="btn btn-sm">Last >></a></li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</div>

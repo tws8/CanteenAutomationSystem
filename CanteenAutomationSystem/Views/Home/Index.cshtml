@@ -1,0 +1,90 @@
+﻿@model CanteenAutomationSystem.Variables.gSetting
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .list-item {
+        background-color: Transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+    }
+</style>
+
+<div id="accordion">
+    <div class="card">
+        <div data-parent="#accordion">
+            <!--
+                No content available
+            -->
+        </div>
+    </div>
+    <br>
+</div>
+
+<script>
+    window.applicationBaseUrl = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+    new Uri(new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+        Url.Content("~/")
+    ).ToString(), true));
+
+    fChkAuthoz();    //Chk User Login Status
+
+    function post(url, Module, Comp) {
+
+        const result = fChkAuthoz(); //Authorize User Login Status
+
+        result.then(
+            function onSuccess(result) {
+                turnon();
+
+                var jqxhr = $.post(window.applicationBaseUrl + url, { Module, Comp })
+                    .done(function () {
+                        if (jqxhr.responseJSON.ErMsg != "") {
+                            turnoff();
+
+                            if (jqxhr.responseJSON.ErMsg.includes("WARNING!")) {
+                                Swal.fire({
+                                    title: 'Warning!',
+                                    html: jqxhr.responseJSON.ErMsg,
+                                    icon: 'warning',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Yes'
+                                }).then((result) => {
+                                    if (result.value) {
+                                        window.location.href = jqxhr.responseJSON.str1;
+                                    }
+                                });
+                            } else {
+                                Swal.fire('Failed!', jqxhr.responseJSON.ErMsg, 'error');
+                                return false;
+                            }
+
+                        } else {
+                            turnoff();
+                            window.location.href = jqxhr.responseJSON.str1;
+                            return false;
+                        }
+
+                    })
+                    .fail(function () {
+                        turnoff();
+                        Swal.fire('Failed!', 'Load Failed.', 'error')
+                        return false;
+                    });
+                return false;
+            }
+        );
+    };
+
+    function turnoff() {
+        document.getElementById("loader-wrapper").style.display = "none";
+    }
+
+    function turnon() {
+        document.getElementById("loader-wrapper").style.display = "";
+    }
+</script>

@@ -1,0 +1,67 @@
+﻿@{ Layout = null; }
+@using CanteenAutomationSystem.Include;
+@using System.Data;
+@model DataSet
+
+<style>
+    th {
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 13.5px;
+    }
+</style>
+
+<div class="col-sm-12" style="overflow:auto;padding:0px;margin:0px;">
+    <table id="PassTable" width="100%" class="table table-hover" style="background-color:white;">
+        <thead>
+            <tr>
+                <th width="10%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Order ID</span></th>
+                <th width="20%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Total Price</span></th>
+                <th width="20%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Discount</span></th>
+                <th width="20%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Actual Price</span></th>
+                <th width="20%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Status</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in Model.Tables[0].Rows)
+            {
+                //Encode URL symbols
+                string search = HttpUtility.UrlEncode(Proc.pConvStr(TempData["SEARCH"]));
+                string sID = HttpUtility.UrlEncode(Proc.pConvStr(row["OrderID"]));
+                string url = "page=" + TempData["PAGE"] + "&search=" + search + "&OrderID=" + sID + "&type=E";
+                
+            <tr>
+                <td><a href="@Url.Action("OrderJS", null, new { area = "FoodOrderingSystem", controller = "FoodOrderingSystem" })?@url" style="text-decoration:none;">@row["OrderID"]</a></td>
+                <td>@row["TotalPrice"]</td>
+                <td>@row["Discount"]</td>
+                <td>@row["ActPrice"]</td>
+                @switch (row["Status"].ToString())
+                {
+                    case "C":
+                        <td>Confirmed</td>
+                        break;
+                    case "E":
+                        <td>Closed</td>
+                        break;
+                    case "P":
+                        <td>Paid and Preparing</td>
+                        break;
+                    case "R":
+                        <td>Ready</td>
+                        break;
+                    case "D":
+                        <td>Deleted</td>
+                        break;
+                    default:
+                        <td></td>
+                        break;
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@Html.Partial("_VwPaging")

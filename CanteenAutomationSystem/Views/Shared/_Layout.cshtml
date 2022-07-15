@@ -1,0 +1,166 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@Session["_SYS_NAME_SHORT"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <meta name="msapplication-tap-highlight" content="no">
+
+    @*  Style  *@
+    <link rel="stylesheet" href="~/Style/Asap.css" />
+    <link rel="stylesheet" href="~/Style/bootstrap-4.1.3.css" />
+    <link rel="stylesheet" href="~/Style/dataTables.bootstrap.css" />
+    <link rel="stylesheet" href="~/Plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="~/main.css" />
+    <link rel="stylesheet" href="~/Style/common.css?v.20201029" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    @*  Javasscript    *@
+    <script src="~/assets/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/Scripts/Bootstrap-v4.4.1.min.js"></script>
+    <script src="~/assets/scripts/main.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/axios.min.js"></script>
+    <script src="~/Scripts/sweetalert2.all.min.js"></script>
+    <script src="~/Scripts/variable.js"></script>
+    <script src="~/Scripts/common.js?v.20210412"></script>
+
+    @RenderSection("Scripts", false)
+</head>
+<body>
+
+    <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
+        <div class="app-header header-shadow">
+
+            <div class="app-header__logo">
+                <a href="~/Home/Index" style="text-decoration:none;" class="text-primary" id="title-header"><font style="font-size:12px; font-weight:bold;"> @Session["_SYS_NAME"].ToString().ToUpper()</font></a>
+                <div class="header__pane ml-auto">
+                    <div>
+                        <button type="button" id="open-close" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
+                            <span class="hamburger-box">
+                                <span class="hamburger-inner"></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-header__mobile-menu">
+                <div>
+                    <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="app-header__menu">
+                <div class="btn-group" style="float:right; border-radius:5px;">
+                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-icon btn-icon-only btn btn-primary btn-sm active">
+                        <i class="fa fa-ellipsis-v fa-w-6"></i>
+                    </a>
+                    <div class="dropdown-menu">
+
+                        <a class="dropdown-item btn btn-sm btn-block" href="@TempData["HostUrl"]/Home/Index"><i class="fas fa-home"></i> Canteen Automation System System</a>
+                        <div class="dropdown-divider"></div>
+                        @using (Html.BeginForm("Logout", "UserLogin", new { area = "" }, FormMethod.Post, new { id = "logoutForm1" }))
+                        {
+                            <a class="dropdown-item btn btn-sm btn-block" href="javascript:document.getElementById('logoutForm1').submit()"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-header__content">
+                <div class="app-header-right">
+                    <div class="header-btn-lg pr-0">
+                        <div class="widget-content p-0">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-left  ml-3 header-user-info">
+                                    <div class="widget-heading" style="text-align:center;">
+                                        @Session["_USERNAME"]
+                                    </div>
+                                    <div class="widget-subheading" style="text-align:center;">
+                                        @{
+                                            if (Session["_USERTYPE"].ToString().Equals("C"))
+                                            {
+                                                using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
+                                                {
+                                                    var gSetting = new CanteenAutomationSystem.Variables.gSetting();
+                                                    string sUserName = CanteenAutomationSystem.Include.Proc.pConvStr(Session["_USERNAME"]);
+                                                    string sCreditBal = gSetting.gCurr + " " + CanteenAutomationSystem.Include.Proc.pFormatDec(context.Customers.Where(x => x.CustID.Equals(sUserName)).Select(x => x.BalCredit).First().ToString(), 2).ToString();
+                                                    HtmlString htmlCreditBal = new HtmlString(sCreditBal);
+                                                    @htmlCreditBal;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                HtmlString htmlWelcome = new HtmlString("Welcome");
+                                                @htmlWelcome
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="btn-group" style="float:right; border-radius:5px;">
+                                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                            <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item btn btn-sm btn-block" href="@TempData["HostUrl"]/Home/Index"><i class="fas fa-home"></i> Canteen Automation System</a>
+                                            <div class="dropdown-divider"></div>
+                                            @using (Html.BeginForm("Logout", "UserLogin", new { area = "" }, FormMethod.Post, new { id = "logoutForm2" }))
+                                            {
+                                                <a class="dropdown-item btn btn-sm btn-block" href="javascript:document.getElementById('logoutForm2').submit()"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui-theme-settings">
+            <div class="theme-settings__inner">
+                <div class="scrollbar-container">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="app-main">
+            @Html.Partial("_sidebar")
+            <div class="app-main__outer">
+                <div class="app-main__inner" id="renderBody">
+                    @RenderBody()
+
+                    <div id="loader-wrapper" style="display:none">
+                        <div id="loader"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bd-example-modal-xl" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <br /><br />
+                    <div id="content_modal"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

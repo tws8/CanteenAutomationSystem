@@ -1,0 +1,140 @@
+﻿/* + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+Version: v2021.07.20
++ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +*/
+
+body {
+    font-family: Asap !important;
+}
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+#loader {
+    display: block;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 3px solid transparent;
+    border-top-color: #3498db;
+    z-index: 1500;
+    border-radius: 50%;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+    #loader:before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border: 3px solid transparent;
+        border-top-color: #e74c3c;
+        border-radius: 50%;
+        -webkit-animation: spin 3s linear infinite;
+        animation: spin 3s linear infinite;
+    }
+
+    #loader:after {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border: 3px solid transparent;
+        border-top-color: #f9c922;
+        border-radius: 50%;
+        -webkit-animation: spin 1.5s linear infinite;
+        animation: spin 1.5s linear infinite;
+    }
+
+/* include this only once */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg); /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(0deg); /* IE 9 */
+        transform: rotate(0deg); /* Firefox 16+, IE 10+, Opera */
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg); /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(360deg); /* IE 9 */
+        transform: rotate(360deg); /* Firefox 16+, IE 10+, Opera */
+    }
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg); /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(0deg); /* IE 9 */
+        transform: rotate(0deg); /* Firefox 16+, IE 10+, Opera */
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg); /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(360deg); /* IE 9 */
+        transform: rotate(360deg); /* Firefox 16+, IE 10+, Opera */
+    }
+}
+
+.form-group {
+    margin-bottom: 0.5rem !important;
+}
+
+.col-form-label {
+    text-align: right;
+    font-weight: bold !important;
+    font-size: 15px !important;
+}
+
+@media (max-width: 768px) {
+    .col-form-label {
+        text-align: left;
+    }
+}
+
+.form-control {
+    border-radius: 0 !important;
+}
+
+/*List Table Header Title Set to Top*/
+.table thead th {
+    vertical-align: top !important;
+}
+
+/*Form Input box alignment*/
+.input-group > .form-control + .form-control, .input-group > .form-control + .custom-select, .input-group > .form-control + .custom-file, .input-group > .form-control-plaintext + .form-control, .input-group > .form-control-plaintext + .custom-select, .input-group > .form-control-plaintext + .custom-file, .input-group > .custom-select + .form-control, .input-group > .custom-select + .custom-select, .input-group > .custom-select + .custom-file, .input-group > .custom-file + .form-control, .input-group > .custom-file + .custom-select, .input-group > .custom-file + .custom-file {
+     margin-left: 0px !important;
+}
+.fa-calendar-alt:before {
+    padding: 1px !important;
+}
+.dropdown-menu {
+    padding: 0.3rem 0 !important;
+}
+
+.card-header {
+    text-align: left !important;
+    display: flex !important;
+}
+
+
+.nav-tabs .nav-link.active {
+    font-weight: bold !important;
+}
+
+.rptFormat {
+    background-color: #51b19d !important;
+    color: white;
+    text-align: center;
+}

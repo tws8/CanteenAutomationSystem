@@ -1,0 +1,79 @@
+﻿@model CanteenAutomationSystem.Areas.MyInfo.Models.MyCreditBal
+
+<div class="tab-content">
+    <div class="tab-pane tabs-animation fade active show" id="tab-content-0" role="tabpanel">
+        <form id="form1" style="font-size:13px;" autocomplete="@TempData["gAUTOFILL"]">
+            <div class="row pb-3">
+                <div class="col-md-6"><h4><b>Customer Details</b></h4></div>
+                <div class="col-md-6">
+
+                    @{
+                        using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
+                        {
+                            string sUserName = CanteenAutomationSystem.Include.Proc.pConvStr(Session["_USERNAME"]);
+                            if (context.Customers.Where(x => x.CustID.Equals(sUserName)).Where(x => !x.CustMemberStatus.Equals("Y")).Any())
+                            {
+                                <button class="btn btn-sm btn-warning mr-1" id="btn_member" style="float:right; border-radius:5px;">
+                                    <i class="fas fa-registered"></i>
+                                    Accept Membership
+                                </button>
+                            }
+                        }
+                    }
+
+                    <button class="btn btn-sm btn-danger mr-1" id="btn_process" style="float:right; border-radius:5px;">
+                        <i class="fas fa-wallet"></i>
+                        Load Credit Balance
+                    </button>
+
+                    <a href="@Url.Action("MyCustomerListing", null, new { area = "MyInfo", controller = "MyInfo" })?page=@Request.QueryString["page"]&search=@Request.QueryString["search"]" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">
+                        <i class="fa fa-undo"></i>
+                        Back
+                    </a>
+                </div>
+            </div>
+
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Customer :</label>
+                        <div class="col-xl-3 col-lg-4 col-md-10 col-sm-12">
+                            <input type="text" id="txtCUSTOMERID" name="CUSTOMERID" value="@Model.CUSTOMERID" class="form-control sRead">
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Credit Balance :</label>
+                        <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                            <input type="text" id="txtCREDITBAL" name="CREDITBAL" value="@Model.CREDITBAL" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,2);" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+     window.applicationBaseUrl = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+    new Uri(new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+        Url.Content("~/")
+    ).ToString(), true));
+
+    $(document).ready(function () {
+        //Set Textbox to to Readonly
+        if (txtID.value != "") {
+            $(".sRead").prop("readonly", true);
+        }
+    });
+
+    $("#btn_process").click(function () {
+        fCRUD('Process', 'MyInfo/MyProfile/UpdateUser_Chk', 'MyInfo/MyProfile/LoadCreditBal', "#form1", 'MyInfo/MyProfile/MyCustomerData?CustomerID=@Model.CUSTOMERID&CreditBal=' + txtCREDITBAL.value + '&page=@Request.QueryString["page"]&search=@Request.QueryString["search"]');
+        return false;
+    });
+
+    $("#btn_member").click(function () {
+        fCRUD('Register Membership for', 'MyInfo/MyProfile/UpdateUser_Chk', 'MyInfo/MyProfile/RegisterMembership', "#form1", 'MyInfo/MyProfile/MyCustomerData?CustomerID=@Model.CUSTOMERID&page=@Request.QueryString["page"]&search=@Request.QueryString["search"]');
+        return false;
+    });
+
+</script>

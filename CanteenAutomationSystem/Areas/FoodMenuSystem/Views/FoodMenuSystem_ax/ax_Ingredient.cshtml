@@ -1,0 +1,41 @@
+﻿@{ Layout = null; }
+@using CanteenAutomationSystem.Include;
+@using System.Data;
+@model DataSet
+
+<style>
+    th {
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 13.5px;
+    }
+</style>
+
+<div class="col-sm-12" style="overflow:auto;padding:0px;margin:0px;">
+    <table id="PassTable" width="100%" class="table table-hover" style="background-color:white;">
+        <thead>
+            <tr>
+                <th width="10%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Ingredient</span></th>
+                <th width="70%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Description</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in Model.Tables[0].Rows)
+            {
+                //Encode URL symbols
+                string search = HttpUtility.UrlEncode(Proc.pConvStr(TempData["SEARCH"]));
+                string sID = HttpUtility.UrlEncode(Proc.pConvStr(row["IngredientID"]));
+                string url = "page=" + TempData["PAGE"] + "&search=" + search + "&IngredientID=" + sID + "&type=E";
+                
+                <tr>
+                    <td><a href="@Url.Action("IngredientData", null, new { area = "FoodMenuSystem", controller = "FoodMenuSystem" })?@url" style="text-decoration:none;">@row["IngredientID"]</a></td>
+                    <td>@row["IngredientDesc"]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@Html.Partial("_VwPaging")

@@ -1,0 +1,241 @@
+﻿@model CanteenAutomationSystem.Areas.FoodOrderingSystem.Models.Order
+@using CanteenAutomationSystem.Include;
+
+<form id="form1" autocomplete="@TempData["gAUTOFILL"]" method="post" style="font-size:13px;">
+    <div class="row pb-3">
+        <div class="col-12">
+            <h4>
+                @{
+                    bool bActive = false;
+                    string sRedirectAction = "", sRedirectController = "", sDetails = "", sQueryString = "";
+                    using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
+                    {
+                        string sUserName = CanteenAutomationSystem.Include.Proc.pConvStr(Session["_USERNAME"]);
+                        int iID = CanteenAutomationSystem.Include.Proc.pConvInt(Request.QueryString["OrderID"]);
+                        string sOrderStatus;
+                        if (context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Select(x => x.Status).Any())
+                        {
+                            sOrderStatus = context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Select(x => x.Status).First();
+                        }
+                        else
+                        {
+                            sOrderStatus = "";
+                        }
+                        if (!Request.QueryString["type"].ToString().Equals("N"))
+                        {
+                            if (!context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Where(x => x.Status.Equals("A")).Any())
+                            {
+                                HtmlString htmlStatus;
+                                <b>
+                                    Order Detail (@switch (sOrderStatus)
+                                    {
+                                        case "C":
+                                            htmlStatus = new HtmlString("Closed");
+                                            sRedirectAction = "OrderListing";
+                                            sRedirectController = "FoodOrderingSystem";
+                                            sDetails = "Food Ordering System";
+                                            sQueryString = "?OrderID=" + Model.ID;
+                                            break;
+                                        case "P":
+                                            htmlStatus = new HtmlString("Paid and Preparing");
+                                            sRedirectAction = "PrepareListing";
+                                            sRedirectController = "FoodPreparationSystem";
+                                            sDetails = "Food Preparation System";
+                                            sQueryString = "?PrepareID=" + Model.ID;
+                                            break;
+                                        case "R":
+                                            htmlStatus = new HtmlString("Ready");
+                                            sRedirectAction = "OrderListing";
+                                            sRedirectController = "FoodOrderingSystem";
+                                            sDetails = "Food Ordering System";
+                                            sQueryString = "?OrderID=" + Model.ID;
+                                            break;
+                                        case "D":
+                                            htmlStatus = new HtmlString("Deleted");
+                                            sRedirectAction = "";
+                                            sRedirectController = "";
+                                            sDetails = "";
+                                            sQueryString = "";
+                                            break;
+                                        default:
+                                            htmlStatus = new HtmlString("");
+                                            sRedirectAction = "";
+                                            sRedirectController = "";
+                                            sDetails = "";
+                                            sQueryString = "";
+                                            break;
+                                    }@htmlStatus)
+                                </b>
+
+                                bActive = false;
+
+                                <a href="@Url.Action("OrderListing", null, new { area = "FoodOrderingSystem", controller = "FoodOrderingSystem" })" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">
+                                    <i class="fa fa-undo"></i>
+                                    Back
+                                </a>
+
+                                if (Session["_USERTYPE"].ToString().Equals("C"))
+                                {
+                                    if (!string.IsNullOrEmpty(sRedirectAction) && !sRedirectAction.Equals("FoodOrderingSystem") && (!Session["_USERTYPE"].ToString().Equals("K") || (Session["_USERTYPE"].ToString().Equals("K") && sRedirectAction.Equals("FoodPreparationSystem"))))
+                                    {
+                                        <a href="@Url.Action(sRedirectAction, null, new { area = sRedirectController, controller = sRedirectController })?@sQueryString" class="popup btn btn-sm btn-info text-white mr-1" style="float:right; border-radius:5px;border:1px solid #c2d6d6;margin-left:5px">
+                                            <i class="fa fa-external-link"></i>
+                                            Proceed to @sDetails
+                                        </a>
+
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <b>Order Detail (Active)</b>
+
+                                if (Session["_USERTYPE"].ToString().Equals("C"))
+                                {
+                                    sRedirectAction = "MenuListing";
+                                    sRedirectController = "FoodMenuSystem";
+                                    sDetails = "Food Menu System";
+                                    sQueryString = "";
+                                }
+                                else
+                                {
+                                    sRedirectAction = "OrderListing";
+                                    sRedirectController = "FoodOrderingSystem";
+                                    sDetails = "Food Ordering System";
+                                    sQueryString = "search=" + Request.QueryString["search"] + "&page=" + Request.QueryString["page"];
+                                }
+
+                                <a href="@Url.Action(sRedirectAction, null, new { area = sRedirectController, controller = sRedirectController })?@sQueryString" class="popup btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;border:1px solid #c2d6d6;margin-left:5px">
+                                    <i class="fa fa-undo"></i>
+                                    Back to @sDetails
+                                </a>
+
+                                bActive = true;
+                            }
+                        }
+                        else
+                        {
+                            <b>Order Detail (New)</b>
+                            bActive = true;
+                        }
+                    }
+                }
+
+            </h4>
+        </div>
+    </div>
+
+    <div class="main-card mb-3 card" id="Card_HD">
+        <div class="card-header">
+            <input id="chk_HD" type="checkbox" hidden>
+
+            <div id="Card_Header_HD" class="card-header-title" style="border-radius:0px;cursor:pointer;">
+                <i class="pe-7s-angle-up-circle" style="color:#3d68e0;font-size:16px;"></i>
+                Header
+            </div>
+
+            <div class="btn-group" id="btn_group" style="float:right; border-radius:5px;margin-left: auto;">
+                @if (Session["_USERTYPE"].ToString().Equals("C") && bActive)
+                {
+                    if (!TempData["TYPE"].ToString().Equals("N"))
+                    {
+                        <button class="btn btn-sm btn-danger mr-1" id="btn_delete" style="float:right; border-radius:5px;">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+
+                        <button class="btn btn-sm btn-warning mr-1" id="btn_confirm" style="float:right; border-radius:5px;">
+                            <i class="fas fa-check"></i>
+                            Confirm and Pay with Balance Credit
+                        </button>
+
+                        <button class="btn btn-sm btn-success mr-1" id="btn_update" style="float:right; border-radius:5px;">
+                            <i class="fas fa-save"></i>
+                            Update
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-success mr-1" id="btn_add" style="float:right; border-radius:5px;">
+                            <i class="fas fa-save"></i>
+                            Add
+                        </button>
+                    }
+                }
+                else if (!Session["_USERTYPE"].ToString().Equals("C"))
+                {
+                    <button class="btn btn-sm btn-success mr-1" id="btn_prepare" style="float:right; border-radius:5px;">
+                        <i class="fas fa-cutlery"></i>
+                        Prepare
+                    </button>
+                }
+            </div>
+
+        </div>
+
+        <input type="hidden" id="HidPageCont" value="@TempData["PAGECONT"]">
+        <input type="hidden" id="HidSearchCont" value="@TempData["SEARCHCONT"]">
+        <input type="hidden" id="HidREFNO" value="">    @*USE FOR IMPORT TO VERITY IS EDIT/NEW*@
+        <input type="hidden" id="HidID" value="@Model.ID">
+
+        <div id="Card_Body_HD" class="card-body">
+            <div class="box-body">
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">ID :</label>
+                    <div class="col-xl-3 col-lg-4 col-md-10 col-sm-12">
+                        <input type="text" id="txtID" name="ID" value="@Model.ID" class="form-control sRead">
+                    </div>
+                </div>
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Payment Mode :</label>
+                    <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                        <select class="form-control sRead" id="txtPAYMENT" name="PAYMENT">
+                            <option value="B" @(Model.PAYMENT == "B" ? "selected" : "")>Online Bank Transfer</option>
+                            <option value="C" @(Model.PAYMENT == "C" ? "selected" : "")>Cash On Delivery</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Delivery Mode :</label>
+                    <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                        <select class="form-control sRead" id="txtDELIVERY" name="DELIVERY">
+                            <option value="D" @(Model.DELIVERY == "D" ? "selected" : "")>Dine-in</option>
+                            <option value="P" @(Model.DELIVERY == "P" ? "selected" : "")>Pick-up</option>
+                            <option value="T" @(Model.DELIVERY == "T" ? "selected" : "")>Delivery</option> @*//Take-Out*@
+                        </select>
+                    </div>
+                </div>
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Total Price (@TempData["gCURR"]) :</label>
+                    <div class="col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="txtTOTPRICE" name="TOTPRICE" value="@Model.TOTPRICE" class="form-control sRead" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,@TempData["gDEC"]);">
+                    </div>
+                </div>
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Discount (@TempData["gCURR"]) :</label>
+                    <div class="col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="txtDISCOUNT" name="DISCOUNT" value="@Model.DISCOUNT" class="form-control sRead" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,@TempData["gDEC"]);">
+                    </div>
+                </div>
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Actual Price (@TempData["gCURR"]) :</label>
+                    <div class="col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="txtACTPRICE" name="ACTPRICE" value="@Model.ACTPRICE" class="form-control sRead" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,@TempData["gDEC"]);">
+                    </div>
+                </div>
+                @if (!Session["_USERTYPE"].ToString().Equals("C"))
+                {
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Status :</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <select class="form-control sRead" id="txtSTATUS" name="STATUS" @(!TempData["TYPE"].ToString().Equals("N") ? "style=pointer-events:none readonly" : "")>
+                                <option value="A" @(Model.STATUS == "A" ? "selected" : "")>Active</option>
+                                <option value="I" @(Model.STATUS == "I" ? "selected" : "")>Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</form>

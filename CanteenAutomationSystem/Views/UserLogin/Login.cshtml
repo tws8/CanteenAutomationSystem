@@ -1,0 +1,83 @@
+﻿@model CanteenAutomationSystem.Variables.User
+
+@{
+    ViewBag.Title = "Login";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container mt-5">
+        <div class="row mt-5" style="max-width: 360px;margin: 7% auto;">
+            <div class="col-sm-12" style="background-color:white;">
+                <div class="form-horizontal mt-4 mb-4">
+                    <input type="hidden" id="UserType" name="UserType" value="0" />
+                    <div class="row">
+                        <div class="col-md-12" style="display: flex; height:30px;">
+                            <div id="CustomerSelection" style="flex: 1; text-align:center; border-bottom:2px solid blue; "><button type="button" id="Customer" name="Customer" checked style="padding: 0; border: none; background: none; align-items: center">Customer</button></div>
+                            <div id="StaffSelection" style="flex: 1; text-align:center; "><button type="button" id="Staff" name="Staff" style="padding: 0; border: none; background: none; align-items: center">Staff</button></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <br />
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <center>
+                                <h2><b>@Session["_SYS_NAME_SHORT"]</b></h2>
+                                <p>Sign in to start your session</p>
+                            </center>
+
+                            <br>
+                            <div class="form-group">
+                                <label style="margin-left:15px;">ID </label>
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.UserID, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus", onchange = "this.value = this.value.toUpperCase()", onkeyup = "this.value = this.value.toUpperCase()" } })
+                                    @Html.ValidationMessageFor(model => model.UserID, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="margin-left:15px;">Password </label>
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.UserPW, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.UserPW, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-12">
+                                    <input style="float:left; border-radius:0px" type="button" value="Register" class="btn btn-light" id="btnRegister" onclick="window.location.assign('/UserLogin/Register')" />
+                                    <input style="float:right; border-radius:0px" type="submit" value="Sign In" class="btn btn-success" />
+                                    <br>
+                                </div>
+                            </div>
+
+                            <br />
+                            @if (ViewBag.Message != "")
+                            {
+                                <div class="text-danger" style="margin-left:15px;">@ViewBag.Message</div>
+                            }
+                        </div>
+                    </div>
+
+                    <script>
+                        $("#CustomerSelection").click(function () {
+                            document.getElementById('UserType').value = '0';
+                            document.getElementById('StaffSelection').style.borderBottom = 'none';
+                            document.getElementById('CustomerSelection').style.borderBottom = '2px solid blue';
+                            document.getElementById('btnRegister').style.display = 'block';
+                        });
+                        $("#StaffSelection").click(function () {
+                            document.getElementById('UserType').value = '1';
+                            document.getElementById('CustomerSelection').style.borderBottom = 'none';
+                            document.getElementById('StaffSelection').style.borderBottom = '2px solid blue';
+                            document.getElementById('btnRegister').style.display = 'none';
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+}
