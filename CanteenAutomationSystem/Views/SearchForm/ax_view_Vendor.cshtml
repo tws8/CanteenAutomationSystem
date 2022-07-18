@@ -1,0 +1,89 @@
+﻿@using System.Data;
+@using CanteenAutomationSystem.Include;
+@model DataSet
+
+<style>
+    th {
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 13px;
+    }
+
+    .table th {
+        border-top: 0px solid;
+    }
+</style>
+
+@{
+    //fopen() Parameter
+    string pFldName = Proc.pConvStr(ViewData["fldName"]);
+    string pType = Proc.pConvStr(ViewData["pType"]);
+    string pContent = Proc.pConvStr(ViewData["pContent"]);
+    string pModal = Proc.pConvStr(ViewData["pModal"]);
+
+    //Title
+    string sTitle = "View Vendor";
+}
+
+<div class="col-sm-12" style="overflow:auto;padding:0px;margin:0px;">
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="pull-left">
+                    <h3>@sTitle</h3>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="col-sm-9 pull-right" style="padding:0px;margin-top:2%;">
+                    <form name="form1" action="#" method="POST" autocomplete="@TempData["gAUTOFILL"]">
+                        <div class="input-group">
+                            <input class="form-control-sm form-control" id="txtSearchView" value="@TempData["SEARCH"]" placeholder="Search" maxlength="30" type="text" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-sm btn-default border" type="submit" name="search" value="Search" onclick="fShowDetails('1','@pFldName','@pType','@pContent','@pType');return false;">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12">
+        <table id="PassTable" width="100%" class="table table-hover" style="background-color:white;">
+            <thead>
+                <tr>
+                    <th width="2%">No.</th>
+                    <th width="5%">ID</th>
+                    <th width="20%">Name</th>
+                    <th width="10%">Phone</th>
+                    <th width="50%">Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int count = 1;
+
+                    foreach (DataRow row in Model.Tables[0].Rows)
+                    {
+                        <tr onmouseover="this.bgColor ='#FFF59D'" onmouseout="this.bgColor ='white'" onclick="fGetValue1('@row["VendorID"]','@pFldName','#@pContent','@pModal','@pType')">
+                            <td>@count</td>
+                            <td>@row["VendorID"]</td>
+                            <td>@row["VendorName"]</td>
+                            <td>@row["VendorPhone"]</td>
+                            <td>@row["VendorEmail"]</td>
+                        </tr>
+
+                        count = count + 1;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@Html.Partial("_VwSrcPaging")
+
+

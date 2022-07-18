@@ -56,6 +56,7 @@ namespace CanteenAutomationSystem.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult ax_view_Ingredient(string pPage, string pFldName, string pType, string pContent, string pModal, string pSearch, bool pCondition)
         {
             var gSetting = _gSetting();
@@ -87,5 +88,44 @@ namespace CanteenAutomationSystem.Controllers
                 return View(IniVwSrcListing(gSetting.gVwPageSize, pConvInt(pPage), pFldName, pType, pContent, pModal, pSearch, dt));
             }
         }
+
+        [Authorize]
+        public ActionResult ax_view_Vendor(string pPage, string pFldName, string pType, string pContent, string pModal, string pSearch, bool pCondition)
+        {
+            var gSetting = _gSetting();
+
+            using (var context = new CanteenContext())
+            {
+                dt = new DataTable();
+                dt.Columns.Add("VendorID", typeof(Int32));
+                dt.Columns.Add("VendorName", typeof(String));
+                dt.Columns.Add("VendorPhone", typeof(String));
+                dt.Columns.Add("VendorEmail", typeof(String));
+
+                IQueryable<Vendor> qVendor = context.Vendors;
+                if (!string.IsNullOrEmpty(pSearch))
+                {
+                    qVendor = qVendor.Where(x => x.VendorID.ToString().Contains(pSearch) ||
+                                        x.VendorName.Contains(pSearch) ||
+                                        x.VendorContact.Contains(pSearch) ||
+                                        x.VendorEmail.Contains(pSearch)
+                                        );
+                }
+                qVendor = qVendor.OrderBy(x => x.VendorID).Select(x => x);
+
+                foreach (var vendor in qVendor)
+                {
+                    dr = dt.NewRow();
+                    dr.SetField<Int32>("VendorID", vendor.VendorID);
+                    dr.SetField<String>("VendorName", vendor.VendorName);
+                    dr.SetField<String>("VendorPhone", vendor.VendorContact);
+                    dr.SetField<String>("VendorEmail", vendor.VendorEmail);
+
+                    dt.Rows.Add(dr);
+                }
+                return View(IniVwSrcListing(gSetting.gVwPageSize, pConvInt(pPage), pFldName, pType, pContent, pModal, pSearch, dt));
+            }
+        }
+
     }
 }

@@ -20,7 +20,10 @@
                 <th width="3%">Rec#</th>
                 <th width="20%">Ingredient Description</th>
                 <th width="10%">Quantity</th>
-                <th width="5%" style="text-align:center">Delete</th>
+                @if (TempData["STATUS"].ToString().Equals("A") && Session["_USERTYPE"].ToString().Equals("K"))
+                {
+                    <th width="5%" style="text-align:center">Delete</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -32,7 +35,10 @@
                         <td><span style="cursor: pointer;color:#007bff" onclick="fForm2_ShowDet('@row["FoodID"]','@row["FoodDetID"]')">@row["FoodDetID"]</span></td>
                         <td><span style="cursor: pointer;color:#007bff" onclick="fForm2_ShowDet('@row["FoodID"]','@row["FoodDetID"]')">@row["IngredientDesc"]</span></td>
                         <td>@Proc.pFormatDec(row["IngredientQty"], 0)</td>
-                        <td style="text-align:center;"><i class="fas fa-trash-alt fa-lg" style="cursor: pointer" onclick="fForm2_Del('@row["FoodID"]','@row["FoodDetID"]','@row["IngredientID"]')"></i></td>
+                        @if (TempData["STATUS"].ToString().Equals("A") && Session["_USERTYPE"].ToString().Equals("K"))
+                        {
+                            <td style="text-align:center;"><i class="fas fa-trash-alt fa-lg" style="cursor: pointer" onclick="fForm2_Del('@row["FoodID"]','@row["FoodDetID"]','@row["IngredientID"]')"></i></td>
+                        }
                     </tr>
                 }
             }

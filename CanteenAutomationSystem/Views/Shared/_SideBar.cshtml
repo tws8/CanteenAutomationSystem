@@ -36,7 +36,7 @@
                 @if (Session["_USERTYPE"] != null && Session["_USERTYPE"].ToString() != "")
                 {
                     <!--#region FoodMenuSystem  -->
-                    if (Session["_USERTYPE"].ToString().Equals("C") || Session["_USERTYPE"].ToString().Equals("A") || Session["_USERTYPE"].ToString().Equals("M") || Session["_USERTYPE"].ToString().Equals("K"))
+                    if (Session["_USERTYPE"].ToString().Equals("C") || Session["_USERTYPE"].ToString().Equals("A") || Session["_USERTYPE"].ToString().Equals("M") || Session["_USERTYPE"].ToString().Equals("K") || Session["_USERTYPE"].ToString().Equals("B"))
                     {
                         <li>
                             <a href="#">
@@ -52,11 +52,14 @@
                                 </li>
                                 @if (!Session["_USERTYPE"].ToString().Equals("C"))
                                 {
-                                    <li>
-                                        <a href="@Url.Action("CategoryListing", null, new { area = "FoodMenuSystem", controller = "FoodMenuSystem" })" @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("CATEGORYLISTING") ? "class= mm-active" : "") style="font-size:14px;">
-                                            Category Listing
-                                        </a>
-                                    </li>
+                                    if (!Session["_USERTYPE"].ToString().Equals("B"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("CategoryListing", null, new { area = "FoodMenuSystem", controller = "FoodMenuSystem" })" @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("CATEGORYLISTING") ? "class= mm-active" : "") style="font-size:14px;">
+                                                Category Listing
+                                            </a>
+                                        </li>
+                                    }
                                     <li>
                                         <a href="@Url.Action("IngredientListing", null, new { area = "FoodMenuSystem", controller = "FoodMenuSystem" })" @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("INGREDIENTLISTING") ? "class= mm-active" : "") style="font-size:14px;">
                                             Ingredient Listing
@@ -68,7 +71,7 @@
                     }
                     <!--#endregion -->
                     <!--#region FoodOrderingSystem  -->
-                    if (Session["_USERTYPE"].ToString().Equals("C") || Session["_USERTYPE"].ToString().Equals("A") || Session["_USERTYPE"].ToString().Equals("M"))
+                    if (Session["_USERTYPE"].ToString().Equals("C") || Session["_USERTYPE"].ToString().Equals("A") || Session["_USERTYPE"].ToString().Equals("M") || Session["_USERTYPE"].ToString().Equals("K") || Session["_USERTYPE"].ToString().Equals("R"))
                     {
                         <li>
                             <a href="#">
@@ -80,7 +83,7 @@
                                 @if (Session["_USERTYPE"].ToString().Equals("C"))
                                 {
                                     <li>
-                                        <a @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("FOODORDERINGSYSTEM") ? "class= mm-active" : "") style="font-size:14px;
+                                        <a @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("ORDERJS") ? "class= mm-active" : "") style="font-size:14px;
                                        @{
                                            string sAction = "OrderID=";
                                            using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
@@ -103,8 +106,32 @@
                                     </li>
                                 }
                                 <li>
-                                    <a href="@Url.Action("OrderListing", null, new { area = "FoodOrderingSystem", controller = "FoodOrderingSystem" })" @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("FOODORDERINGSYSTEM") ? "class= mm-active" : "") style="font-size:14px;">
+                                    <a href="@Url.Action("OrderListing", null, new { area = "FoodOrderingSystem", controller = "FoodOrderingSystem" })" @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("ORDERLISTING") && !HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("PURCHASEORDERLISTING") ? "class= mm-active" : "") style="font-size:14px;">
                                         Previous Food Order Listing
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    <!--#endregion -->
+                    <!--#region RecipeManagementSystem  -->
+                    if (Session["_USERTYPE"].ToString().Equals("B") || Session["_USERTYPE"].ToString().Equals("A") || Session["_USERTYPE"].ToString().Equals("M"))
+                    {
+                        <li>
+                            <a href="#">
+                                <i class="metismenu-icon pe-7s-album"></i>
+                                RECIPE MANAGEMENT SYSTEM
+                                <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                            </a>
+                            <ul class="vertical-nav-menu metismenu">
+                                <li>
+                                    <a href="@Url.Action("PurchaseOrderListing", null, new { area = "RecipeManagementSystem", controller = "RecipeManagementSystem" })" @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("PURCHASEORDERLISTING") ? "class= mm-active" : "") style="font-size:14px;">
+                                        Purchase Order Listing
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("VendorListing", null, new { area = "RecipeManagementSystem", controller = "RecipeManagementSystem" })" @(HttpContext.Current.Request.Url.AbsolutePath.ToUpper().EndsWith("VENDORLISTING") ? "class= mm-active" : "") style="font-size:14px;">
+                                        Vendor Listing
                                     </a>
                                 </li>
                             </ul>

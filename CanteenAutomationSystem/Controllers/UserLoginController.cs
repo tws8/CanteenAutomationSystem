@@ -39,7 +39,6 @@ namespace CanteenAutomationSystem.Controllers
             string sUserId = user.UserID;
             string sUnEncryptedUserPw = user.UserPW;
             string sUserType = user.UserType;
-            byte[] sEncryptedUserPw;
 
             if (ModelState.IsValid)
             {
@@ -68,18 +67,6 @@ namespace CanteenAutomationSystem.Controllers
 
                             if (qIsCustUser.Any())
                             {
-                                /*
-                                byte[] encData_byte = new byte[UserPw.Length];
-                                encData_byte = Encoding.UTF8.GetBytes(UserPw);
-                                UserPw = Convert.ToBase64String(encData_byte);
-                                */
-
-                                //byte[] empty;
-                                //string sEmpty = "";
-                                //AesEncryption(true, sUnEncryptedUserPw, null, out sEncryptedUserPw, out sEmpty);
-                                //AesEncryption(false, null, sEncryptedUserPw, out empty, out sUnEncryptedUserPw);
-                                //query = query.Where(x => x.UserPassword.Equals(sEncryptedUserPw));
-
                                 Session["_USERNAME"] = sUserId.ToUpper();
                                 Session["_USERTYPE"] = "C";
 

@@ -37,12 +37,10 @@ namespace CanteenAutomationSystem.Models
         [StringLength(1)]
         public String CustMemberStatus { get; set; }
 
-        [Phone]
         [Column(TypeName = "VARCHAR")]
-        [StringLength(15)]
+        [StringLength(50)]
         public String CustPhone { get; set; }
 
-        [EmailAddress]
         [Column(TypeName = "VARCHAR")]
         [StringLength(50)]
         public String CustEmail { get; set; }

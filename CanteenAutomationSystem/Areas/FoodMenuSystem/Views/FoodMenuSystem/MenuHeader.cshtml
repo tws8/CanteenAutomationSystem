@@ -24,7 +24,7 @@
             </div>
 
             <div class="btn-group" id="btn_group" style="float:right; border-radius:5px;margin-left: auto;">
-                @if (!Session["_USERTYPE"].ToString().Equals("C"))
+                @if (Session["_USERTYPE"].ToString().Equals("K"))
                 {
                     if (!TempData["TYPE"].ToString().Equals("N"))
                     {
@@ -95,7 +95,7 @@
                 <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Description :</label>
                     <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
-                        <input type="text" id="txtDESC" name="DESC" value="@Model.DESC" class="form-control" maxlength="20">
+                        <input type="text" id="txtDESC" name="DESC" value="@Model.DESC" class="form-control" maxlength="50">
                     </div>
                 </div>
                 <div class="position-relative row form-group">
@@ -129,16 +129,17 @@
                             <input type="text" id="txtURL" name="URL" value="@Model.URL" class="form-control">
                         </div>
                     </div>
-                    <div class="position-relative row form-group">
-                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Status :</label>
-                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
-                            <select class="form-control sRead" id="txtSTATUS" name="STATUS" @(!TempData["TYPE"].ToString().Equals("N") ? "style=pointer-events:none readonly" : "")>
-                                <option value="A" @(Model.STATUS == "A" ? "selected" : "")>Active</option>
-                                <option value="I" @(Model.STATUS == "I" ? "selected" : "")>Inactive</option>
-                            </select>
-                        </div>
-                    </div>
                 }
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Status :</label>
+                    <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                        <select class="form-control sRead" id="txtSTATUS" name="STATUS" @(!TempData["TYPE"].ToString().Equals("N") ? "style=pointer-events:none readonly" : "")>
+                            <option value="A" @(Model.STATUS == "A" ? "selected" : "")>Active</option>
+                            <option value="I" @(Model.STATUS == "I" ? "selected" : "")>Inactive</option>
+                            <option value="D" @(Model.STATUS == "D" ? "selected" : "")>Deleted</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -29,6 +29,7 @@ namespace CanteenAutomationSystem.Models
 
         public Decimal IngredientPrice { get; set; }
 
+        [StringLength(1)]
         public String Status { get; set; }
 
         public virtual PurchaseOrder PurchaseOrders { get; set; }

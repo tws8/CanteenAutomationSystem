@@ -107,14 +107,21 @@ namespace CanteenAutomationSystem.Areas.FoodMenuSystem.Controllers
             var gSetting = _gSetting();
             int page = pConvInt(Request.QueryString["page"]);
             string search = pRTIN(Request.QueryString["search"]);
-            string status = pRTIN(Request.QueryString["fmstatus"]);
             int id = pConvInt(Request.QueryString["sRefNo"]);
 
-            TempData["STATUS"] = status;
             TempData["vCONTENT"] = "ax_FoodDet";
 
             using (var context = new CanteenContext())
             {
+                if (context.Foods.Where(x => x.FoodID.Equals(id)).Select(x => x.Status).Any())
+                {
+                    TempData["STATUS"] = context.Foods.Where(x => x.FoodID.Equals(id)).Select(x => x.Status).First();
+                }
+                else
+                {
+                    TempData["STATUS"] = "";
+                }
+
                 DataTable dt = new DataTable();
                 dt.Columns.Add("FoodID", typeof(Int32));
                 dt.Columns.Add("FoodDetID", typeof(Int32));

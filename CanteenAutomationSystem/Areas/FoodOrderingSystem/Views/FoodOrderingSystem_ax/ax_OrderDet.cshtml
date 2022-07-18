@@ -21,7 +21,7 @@
                 <th width="20%">Food Description</th>
                 <th width="10%">Quantity</th>
                 <th width="10%">Total Price</th>
-                @if (TempData["STATUS"].ToString().Equals("A"))
+                @if (TempData["STATUS"].ToString().Equals("A") && Session["_USERTYPE"].ToString().Equals("C"))
                 {
                     <th width="5%" style="text-align:center">Delete</th>
                 }
@@ -37,7 +37,7 @@
                         <td><span style="cursor: pointer;color:#007bff" onclick="fForm2_ShowDet('@row["OrderID"]','@row["OrderDetID"]')">@row["FoodDesc"]</span></td>
                         <td>@Proc.pFormatDec(row["Quantity"], 0)</td>
                         <td>@Proc.pFormatDec(row["TotalPrice"], 2)</td>
-                        @if (TempData["STATUS"].ToString().Equals("A"))
+                        @if (TempData["STATUS"].ToString().Equals("A") && Session["_USERTYPE"].ToString().Equals("C"))
                         {
                             <td style="text-align:center;"><i class="fas fa-trash-alt fa-lg" style="cursor: pointer" onclick="fForm2_Del('@row["OrderID"]','@row["OrderDetID"]','@row["FoodID"]')"></i></td>
                         }

@@ -232,6 +232,31 @@ namespace CanteenAutomationSystem.Controllers
             }
         }
 
+        public void PurchaseOrder_Recalculation(int iOrder)
+        {
+            using (var context = new CanteenContext())
+            {
+                gSetting = new gSetting();
+                string sUserName = pConvStr(Session["_USERNAME"]);
+                decimal dcTotPrice;
+
+                var purchaseOrders = context.PurchaseOrders.Where(x => x.PurchaseOrderID.Equals(iOrder)).First();
+
+                if (context.PurchaseOrderDets.Where(x => x.PurchaseOrderID.Equals(iOrder)).Where(x => !x.Status.Equals("D")).Any())
+                {
+                    dcTotPrice = context.PurchaseOrderDets.Where(x => x.PurchaseOrderID.Equals(iOrder)).Where(x => !x.Status.Equals("D")).Sum(x => x.IngredientPrice);
+
+                    purchaseOrders.TotalPrice = dcTotPrice;
+                }
+                else
+                {
+                    purchaseOrders.TotalPrice = 0;
+                    purchaseOrders.Status = "D";
+                }
+                context.SaveChanges();
+            }
+        }
+
         public void Order_Reconfirmation()
         {
             using (var context = new CanteenContext())

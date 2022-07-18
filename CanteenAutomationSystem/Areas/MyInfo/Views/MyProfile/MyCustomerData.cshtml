@@ -8,25 +8,27 @@
                 <div class="col-md-6">
 
                     @{
-                        using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
+                        if (Session["_USERTYPE"].ToString().Equals("F"))
                         {
-                            string sUserName = CanteenAutomationSystem.Include.Proc.pConvStr(Session["_USERNAME"]);
-                            if (context.Customers.Where(x => x.CustID.Equals(sUserName)).Where(x => !x.CustMemberStatus.Equals("Y")).Any())
+                            using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
                             {
-                                <button class="btn btn-sm btn-warning mr-1" id="btn_member" style="float:right; border-radius:5px;">
-                                    <i class="fas fa-registered"></i>
-                                    Accept Membership
-                                </button>
+                                if (context.Customers.Where(x => x.CustID.Equals(Model.CUSTOMERID)).Where(x => !x.CustMemberStatus.Equals("Y")).Any())
+                                {
+                                    <button class="btn btn-sm btn-warning mr-1" id="btn_member" style="float:right; border-radius:5px;">
+                                        <i class="fas fa-registered"></i>
+                                        Accept Membership
+                                    </button>
+                                }
                             }
+
+                            <button class="btn btn-sm btn-danger mr-1" id="btn_process" style="float:right; border-radius:5px;">
+                                <i class="fas fa-wallet"></i>
+                                Load Credit Balance
+                            </button>
                         }
                     }
 
-                    <button class="btn btn-sm btn-danger mr-1" id="btn_process" style="float:right; border-radius:5px;">
-                        <i class="fas fa-wallet"></i>
-                        Load Credit Balance
-                    </button>
-
-                    <a href="@Url.Action("MyCustomerListing", null, new { area = "MyInfo", controller = "MyInfo" })?page=@Request.QueryString["page"]&search=@Request.QueryString["search"]" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">
+                    <a href="@Url.Action("MyCustomerListing", null, new { area = "MyInfo", controller = "MyProfile" })?page=@Request.QueryString["page"]&search=@Request.QueryString["search"]" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">
                         <i class="fa fa-undo"></i>
                         Back
                     </a>

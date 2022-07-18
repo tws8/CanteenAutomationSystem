@@ -7,19 +7,22 @@
                 <div class="col-md-6"><h4><b>Category Details</b></h4></div>
                 <div class="col-md-6">
 
-                    @if (!TempData["TYPE"].ToString().Equals("N"))
+                    @if (Session["_USERTYPE"].ToString().Equals("K"))
                     {
-                        <button class="btn btn-sm btn-success" id="btn_update" style="float:right; border-radius:5px;width:80px;">
-                            <i class="fas fa-save"></i>
-                            Update
-                        </button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-sm btn-success" id="btn_add" style="float:right; border-radius:5px;width:80px;">
-                            <i class="fas fa-save"></i>
-                            Add
-                        </button>
+                        if (!TempData["TYPE"].ToString().Equals("N"))
+                        {
+                            <button class="btn btn-sm btn-success" id="btn_update" style="float:right; border-radius:5px;width:80px;">
+                                <i class="fas fa-save"></i>
+                                Update
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-sm btn-success" id="btn_add" style="float:right; border-radius:5px;width:80px;">
+                                <i class="fas fa-save"></i>
+                                Add
+                            </button>
+                        }
                     }
 
                     <a href="@Url.Action("CategoryListing", null, new { area = "FoodMenuSystem", controller = "FoodMenuSystem" })?page=@Request.QueryString["page"]&search=@Request.QueryString["search"]" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">

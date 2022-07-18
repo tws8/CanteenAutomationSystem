@@ -9,11 +9,14 @@
     <div class="col-md-6">
         <h4><b>Ingredient Listing</b></h4>
     </div>
-    <div class="col-md-6 text-right">
-        <button class="popup btn btn-sm btn-info text-white" style="margin-bottom:10px; border-radius:5px;" onclick="goto('FoodMenuSystem/FoodMenuSystem/IngredientData')">
-            <i class="fa fa-plus"></i> Add New
-        </button>
-    </div>
+    @if (Session["_USERTYPE"].ToString().Equals("K"))
+    {
+        <div class="col-md-6 text-right">
+            <button class="popup btn btn-sm btn-info text-white" style="margin-bottom:10px; border-radius:5px;" onclick="goto('FoodMenuSystem/FoodMenuSystem/IngredientData')">
+                <i class="fa fa-plus"></i> Add New
+            </button>
+        </div>
+    }
 </div>
 
 <div class="tab-content">

@@ -1,0 +1,53 @@
+﻿@{ Layout = null; }
+@model DataSet
+@using CanteenAutomationSystem.Include;
+@using System.Data;
+
+<style>
+    th {
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 13.5px;
+    }
+</style>
+
+<div class="col-sm-12" style="overflow:auto;padding:0px;margin:0px;">
+    <table id="PassTable" width="100%" class="table table-hover" style="background-color:white;">
+        <thead>
+            <tr>
+                <th width="3%">Rec#</th>
+                <th width="20%">Ingredient Description</th>
+                <th width="10%">Unit Price</th>
+                <th width="10%">Quantity</th>
+                <th width="10%">Total Price</th>
+                @if (TempData["STATUS"].ToString().Equals("A") && Session["_USERTYPE"].ToString().Equals("B"))
+                {
+                    <th width="5%" style="text-align:center">Delete</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in Model.Tables[0].Rows)
+            {
+                if (!row["Status"].ToString().Equals("D"))
+                {
+                    <tr>
+                        <td><span style="cursor: pointer;color:#007bff" onclick="fForm2_ShowDet('@row["PurchaseOrderID"]','@row["PurchaseOrderDetID"]')">@row["PurchaseOrderDetID"]</span></td>
+                        <td><span style="cursor: pointer;color:#007bff" onclick="fForm2_ShowDet('@row["PurchaseOrderID"]','@row["PurchaseOrderDetID"]')">@row["IngredientDesc"]</span></td>
+                        <td>@Proc.pFormatDec(row["UnitPrice"], 2)</td>
+                        <td>@Proc.pFormatDec(row["Quantity"], 0)</td>
+                        <td>@Proc.pFormatDec(row["IngredientPrice"], 2)</td>
+                        @if (TempData["STATUS"].ToString().Equals("A") && Session["_USERTYPE"].ToString().Equals("B"))
+                        {
+                            <td style="text-align:center;"><i class="fas fa-trash-alt fa-lg" style="cursor: pointer" onclick="fForm2_Del('@row["PurchaseOrderID"]','@row["PurchaseOrderDetID"]','@row["IngredientID"]')"></i></td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@Html.Partial("_VwPaging")

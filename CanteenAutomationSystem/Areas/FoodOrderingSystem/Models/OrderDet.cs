@@ -17,12 +17,14 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Models
         [RegularExpression(@"^[\w_\!\~\`\@\$\*\(\)\-\.\ \/\#\+]+$", ErrorMessage = "Symbol support !~`@$*()-_. /#+ only")]
         public Int32 FOODID { get; set; }
 
+        [StringLength(50)]
         public String FOODDESC { get; set; }
 
         public Int32 QUANTITY { get; set; }
 
         public Decimal TOTPRICE { get; set; }
 
+        [StringLength(1)]
         public String STATUS { get; set; }
     }
 }
