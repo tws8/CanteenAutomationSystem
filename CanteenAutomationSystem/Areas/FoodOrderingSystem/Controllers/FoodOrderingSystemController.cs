@@ -603,11 +603,19 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
                     foods.Status = "P";
                     context.SaveChanges();
 
-                    decimal dcCreditBal = context.Customers.Where(x => x.CustID.Equals(sUserName)).Select(x => x.BalCredit).First();
-                    dcCreditBal -= dcACTPRICE;
+                    var qCreditBal = context.Customers.Where(x => x.CustID.Equals(sUserName)).Select(x => x).First();
+                    qCreditBal.BalCredit -= dcACTPRICE;
                     context.SaveChanges();
 
-                    int iPayID = context.Pays.OrderByDescending(x => x.PayID).Select(x => x.PayID).First() + 1;
+                    int iPayID;
+                    if (context.Pays.Any())
+                    {
+                        iPayID = context.Pays.OrderByDescending(x => x.PayID).Select(x => x.PayID).First() + 1;
+                    }
+                    else
+                    {
+                        iPayID = 1;
+                    }
                     var pays = new Pay()
                     {
                         PayID = iPayID,

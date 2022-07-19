@@ -18,7 +18,7 @@
                             {
                                 HtmlString htmlStatus;
                                 <b>
-                                    Order Detail (@switch (sOrderStatus)
+                                    Food Order Detail (@switch (sOrderStatus)
                                     {
                                         case "A":
                                             htmlStatus = new HtmlString("Active");
@@ -35,11 +35,18 @@
                                             sQueryString = "?OrderID=" + Model.ID;
                                             break;
                                         case "P":
-                                            htmlStatus = new HtmlString("Paid and Preparing");
+                                            htmlStatus = new HtmlString("Confirmed and Paid");
                                             sRedirectAction = "OrderListing";
                                             sRedirectController = "FoodOrderingSystem";
                                             sDetails = "Food Ordering System";
-                                            sQueryString = "?PrepareID=" + Model.ID;
+                                            sQueryString = "?OrderID=" + Model.ID;
+                                            break;
+                                        case "K":
+                                            htmlStatus = new HtmlString("Order Preparing");
+                                            sRedirectAction = "OrderListing";
+                                            sRedirectController = "FoodOrderingSystem";
+                                            sDetails = "Food Ordering System";
+                                            sQueryString = "?OrderID=" + Model.ID;
                                             break;
                                         case "R":
                                             htmlStatus = new HtmlString("Ready");
@@ -72,21 +79,23 @@
                                     Back
                                 </a>
 
+                                /*
                                 if (Session["_USERTYPE"].ToString().Equals("C"))
                                 {
                                     if (!string.IsNullOrEmpty(sRedirectAction) && !sRedirectAction.Equals("FoodOrderingSystem") && (!Session["_USERTYPE"].ToString().Equals("K") || (Session["_USERTYPE"].ToString().Equals("K") && sRedirectAction.Equals("FoodPreparationSystem"))))
                                     {
-                                        <a href="@Url.Action(sRedirectAction, null, new { area = sRedirectController, controller = sRedirectController })?@sQueryString" class="popup btn btn-sm btn-info text-white mr-1" style="float:right; border-radius:5px;border:1px solid #c2d6d6;margin-left:5px">
+                                        <a href="@Url.Action(sRedirectAction, null, new { area = sRedirectController, controller = sRedirectController })@sQueryString" class="popup btn btn-sm btn-info text-white mr-1" style="float:right; border-radius:5px;border:1px solid #c2d6d6;margin-left:5px">
                                             <i class="fa fa-external-link"></i>
                                             Proceed to @sDetails
                                         </a>
 
                                     }
                                 }
+                                */
                             }
                             else
                             {
-                                <b>Order Detail (Active)</b>
+                                <b>Food Order Detail (Active)</b>
 
                                 if (Session["_USERTYPE"].ToString().Equals("C"))
                                 {
@@ -113,7 +122,7 @@
                         }
                         else
                         {
-                            <b>Order Detail (New)</b>
+                            <b>Food Order Detail (New)</b>
                             bActive = true;
                         }
                     }
@@ -176,6 +185,9 @@
                             Ready to Serve
                         </button>
                     }
+                }
+                else if (Session["_USERTYPE"].ToString().Equals("R"))
+                {
                     if (Model.STATUS.Equals("R"))
                     {
                         <button class="btn btn-sm btn-success mr-1" id="btn_deliver" style="float:right; border-radius:5px;">
@@ -238,7 +250,7 @@
                             <div class="position-relative row form-group">
                                 <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Ordered Date and Time :</label>
                                 <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                                    <input value="@DateTime.Parse(Model.DTESTDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
+                                    <input value="@DateTime.Parse(Model.DTORDDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
                                 </div>
 
                                 @if (Model.STATUS.Equals("C"))
@@ -250,30 +262,30 @@
                                 }
                             </div>
 
-                            if (!Model.STATUS.Equals("P"))
-                            {
-                                <div class="position-relative row form-group">
-                                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Order Estimated Completion Date :</label>
-                                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                                        @if (Model.DTESTDATETIME != null)
-                                        {
-                                            <input value="@DateTime.Parse(Model.DTESTDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
-                                        }
-                                        else
-                                        {
-                                            <input type="datetime-local" id="dtpDTESTDATETIME" name="DTESTDATETIME" value="@Model.DTESTDATETIME" class="form-control">
-                                        }
-                                    </div>
+                            <div class="position-relative row form-group">
+                                <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Order Estimated Completion Date :</label>
+                                <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                                    @if (Model.DTESTDATETIME != null)
+                                    {
+                                        <input value="@DateTime.Parse(Model.DTESTDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
+                                    }
+                                    else
+                                    {
+                                        <input type="datetime-local" id="dtpDTESTDATETIME" name="DTESTDATETIME" value="@Model.DTESTDATETIME" class="form-control">
+                                    }
+                                </div>
 
-                                    @if (Model.STATUS.Equals("R") || Model.STATUS.Equals("C"))
+                                @if (!Model.STATUS.Equals("P"))
+                                {
+                                    if (Model.STATUS.Equals("R") || Model.STATUS.Equals("C"))
                                     {
                                         <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Order Actual Completion Date :</label>
                                         <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
                                             <input value="@DateTime.Parse(Model.DTACTDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
                                         </div>
                                     }
-                                </div>
-                            }
+                                }
+                            </div>
                         }
                     }
                 }

@@ -17,7 +17,7 @@
 
     //First time page load
     $(document).ready(function () {
-        if (document.getElementById('dtpDTORDDATETIME')) {
+        if (document.getElementById('dtpDTESTDATETIME')) {
             var date = new Date();
             var dtTemp = date.getFullYear() + '-';
             if (date.getMonth() + 1 < 10) {
@@ -36,7 +36,7 @@
                 dtTemp = dtTemp + '0';
             }
             dtTemp = dtTemp + date.getMinutes();
-            dtpDTORDDATETIME.value = dtTemp;
+            dtpDTESTDATETIME.value = dtTemp;
 
             config = {
                 enableTime: true,
@@ -431,11 +431,11 @@
     });
 
     $("#btn_prepare").click(function () {
-        fCRUD('Prepare', 'FoodOrderingSystem/FoodOrderingSystem/PrepareOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/ConfirmOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
+        fCRUD('Prepare', 'FoodOrderingSystem/FoodOrderingSystem/PrepareOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/PrepareOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
         return false;
     });
 
-    $("#btn_ready").click(function () {
+    $("#btn_serve").click(function () {
         fCRUD('Ready to Serve', 'FoodOrderingSystem/FoodOrderingSystem/ServeOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/ServeOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
         return false;
     });
