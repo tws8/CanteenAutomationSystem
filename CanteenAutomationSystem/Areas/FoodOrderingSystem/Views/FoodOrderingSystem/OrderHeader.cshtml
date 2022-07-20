@@ -10,25 +10,23 @@
                     string sRedirectAction = "", sRedirectController = "", sDetails = "", sQueryString = "";
                     using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
                     {
-                        string sUserName = CanteenAutomationSystem.Include.Proc.pConvStr(Session["_USERNAME"]);
                         int iID = CanteenAutomationSystem.Include.Proc.pConvInt(Request.QueryString["OrderID"]);
-                        string sOrderStatus;
-                        if (context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Select(x => x.Status).Any())
-                        {
-                            sOrderStatus = context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Select(x => x.Status).First();
-                        }
-                        else
-                        {
-                            sOrderStatus = "";
-                        }
+                        string sOrderStatus = context.Orders.Where(x => x.OrderID.Equals(iID)).Select(x => x.Status).First();
                         if (!Request.QueryString["type"].ToString().Equals("N"))
                         {
-                            if (!context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Where(x => x.Status.Equals("A")).Any())
+                            if (!context.Orders.Where(x => x.OrderID.Equals(iID)).Where(x => x.Status.Equals("A")).Any())
                             {
                                 HtmlString htmlStatus;
                                 <b>
                                     Order Detail (@switch (sOrderStatus)
                                     {
+                                        case "A":
+                                            htmlStatus = new HtmlString("Active");
+                                            sRedirectAction = "OrderListing";
+                                            sRedirectController = "FoodOrderingSystem";
+                                            sDetails = "Food Ordering System";
+                                            sQueryString = "?OrderID=" + Model.ID;
+                                            break;
                                         case "C":
                                             htmlStatus = new HtmlString("Closed");
                                             sRedirectAction = "OrderListing";
@@ -38,9 +36,9 @@
                                             break;
                                         case "P":
                                             htmlStatus = new HtmlString("Paid and Preparing");
-                                            sRedirectAction = "PrepareListing";
-                                            sRedirectController = "FoodPreparationSystem";
-                                            sDetails = "Food Preparation System";
+                                            sRedirectAction = "OrderListing";
+                                            sRedirectController = "FoodOrderingSystem";
+                                            sDetails = "Food Ordering System";
                                             sQueryString = "?PrepareID=" + Model.ID;
                                             break;
                                         case "R":
@@ -162,12 +160,29 @@
                         </button>
                     }
                 }
-                else if (!Session["_USERTYPE"].ToString().Equals("C"))
+                else if (Session["_USERTYPE"].ToString().Equals("K"))
                 {
-                    <button class="btn btn-sm btn-success mr-1" id="btn_prepare" style="float:right; border-radius:5px;">
-                        <i class="fas fa-cutlery"></i>
-                        Prepare
-                    </button>
+                    if (Model.STATUS.Equals("P"))
+                    {
+                        <button class="btn btn-sm btn-primary mr-1" id="btn_prepare" style="float:right; border-radius:5px;">
+                            <i class="fas fa-briefcase"></i>
+                            Prepare
+                        </button>
+                    }
+                    if (Model.STATUS.Equals("K"))
+                    {
+                        <button class="btn btn-sm btn-info mr-1" id="btn_serve" style="float:right; border-radius:5px;">
+                            <i class="fas fa-check"></i>
+                            Ready to Serve
+                        </button>
+                    }
+                    if (Model.STATUS.Equals("R"))
+                    {
+                        <button class="btn btn-sm btn-success mr-1" id="btn_deliver" style="float:right; border-radius:5px;">
+                            <i class="fas fa-truck"></i>
+                            Deliver
+                        </button>
+                    }
                 }
             </div>
 
@@ -187,21 +202,11 @@
                     </div>
                 </div>
                 <div class="position-relative row form-group">
-                    <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Payment Mode :</label>
-                    <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
-                        <select class="form-control sRead" id="txtPAYMENT" name="PAYMENT">
-                            <option value="B" @(Model.PAYMENT == "B" ? "selected" : "")>Online Bank Transfer</option>
-                            <option value="C" @(Model.PAYMENT == "C" ? "selected" : "")>Cash On Delivery</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Delivery Mode :</label>
                     <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
                         <select class="form-control sRead" id="txtDELIVERY" name="DELIVERY">
                             <option value="D" @(Model.DELIVERY == "D" ? "selected" : "")>Dine-in</option>
                             <option value="P" @(Model.DELIVERY == "P" ? "selected" : "")>Pick-up</option>
-                            <option value="T" @(Model.DELIVERY == "T" ? "selected" : "")>Delivery</option> @*//Take-Out*@
                         </select>
                     </div>
                 </div>
@@ -223,14 +228,66 @@
                         <input type="text" id="txtACTPRICE" name="ACTPRICE" value="@Model.ACTPRICE" class="form-control sRead" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,@TempData["gDEC"]);">
                     </div>
                 </div>
+
+                @if (Model.STATUS != null)
+                {
+                    if (!Model.STATUS.Equals("D"))
+                    {
+                        if (!Model.STATUS.Equals("A"))
+                        {
+                            <div class="position-relative row form-group">
+                                <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Ordered Date and Time :</label>
+                                <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                                    <input value="@DateTime.Parse(Model.DTESTDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
+                                </div>
+
+                                @if (Model.STATUS.Equals("C"))
+                                {
+                                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Actual Received Date and Time :</label>
+                                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                                        <input value="@DateTime.Parse(Model.DTDELDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
+                                    </div>
+                                }
+                            </div>
+
+                            if (!Model.STATUS.Equals("P"))
+                            {
+                                <div class="position-relative row form-group">
+                                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Order Estimated Completion Date :</label>
+                                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                                        @if (Model.DTESTDATETIME != null)
+                                        {
+                                            <input value="@DateTime.Parse(Model.DTESTDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
+                                        }
+                                        else
+                                        {
+                                            <input type="datetime-local" id="dtpDTESTDATETIME" name="DTESTDATETIME" value="@Model.DTESTDATETIME" class="form-control">
+                                        }
+                                    </div>
+
+                                    @if (Model.STATUS.Equals("R") || Model.STATUS.Equals("C"))
+                                    {
+                                        <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Order Actual Completion Date :</label>
+                                        <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                                            <input value="@DateTime.Parse(Model.DTACTDATETIME.ToString()).ToString("MMMM dd, yyyy (hh:mm tt)")" class="form-control" disabled>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                    }
+                }
                 @if (!Session["_USERTYPE"].ToString().Equals("C"))
                 {
                     <div class="position-relative row form-group">
                         <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Status :</label>
                         <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
-                            <select class="form-control sRead" id="txtSTATUS" name="STATUS" @(!TempData["TYPE"].ToString().Equals("N") ? "style=pointer-events:none readonly" : "")>
+                            <select class="form-control sRead" id="txtSTATUS" name="STATUS" style="pointer-events:none" readonly>
                                 <option value="A" @(Model.STATUS == "A" ? "selected" : "")>Active</option>
-                                <option value="I" @(Model.STATUS == "I" ? "selected" : "")>Inactive</option>
+                                <option value="D" @(Model.STATUS == "D" ? "selected" : "")>Deleted</option>
+                                <option value="P" @(Model.STATUS == "P" ? "selected" : "")>Confirmed and Paid</option>
+                                <option value="C" @(Model.STATUS == "C" ? "selected" : "")>Closed</option>
+                                <option value="K" @(Model.STATUS == "K" ? "selected" : "")>Food Preparation</option>
                             </select>
                         </div>
                     </div>

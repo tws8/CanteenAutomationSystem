@@ -1,0 +1,90 @@
+﻿@model CanteenAutomationSystem.Areas.RecipeManagementSystem.Models.Vendor
+
+<div class="tab-content">
+    <div class="tab-pane tabs-animation fade active show" id="tab-content-0" role="tabpanel">
+        <form id="form1" style="font-size:13px;" autocomplete="@TempData["gAUTOFILL"]">
+            <div class="row pb-3">
+                <div class="col-md-6"><h4><b>Vendor Details</b></h4></div>
+                <div class="col-md-6">
+
+                    @if (Session["_USERTYPE"].ToString().Equals("B"))
+                    {
+                        if (!TempData["TYPE"].ToString().Equals("N"))
+                        {
+                            <button class="btn btn-sm btn-success" id="btn_update" style="float:right; border-radius:5px;width:80px;">
+                                <i class="fas fa-save"></i>
+                                Update
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-sm btn-success" id="btn_add" style="float:right; border-radius:5px;width:80px;">
+                                <i class="fas fa-save"></i>
+                                Add
+                            </button>
+                        }
+                    }
+
+                    <a href="@Url.Action("VendorListing", null, new { area = "RecipeManagementSystem", controller = "RecipeManagementSystem" })?page=@Request.QueryString["page"]&search=@Request.QueryString["search"]" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">
+                        <i class="fa fa-undo"></i>
+                        Back
+                    </a>
+                </div>
+            </div>
+
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">ID :</label>
+                        <div class="col-xl-3 col-lg-4 col-md-10 col-sm-12">
+                            <input type="text" id="txtID" name="ID" value="@Model.ID" class="form-control @(TempData["TYPE"].ToString().Equals("N") ? "sRead" : "")" maxlength="10" @(!TempData["TYPE"].ToString().Equals("N") ? "readonly" : "")>
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Name :</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <input type="text" id="txtNAME" name="NAME" value="@Model.NAME" class="form-control" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Phone :</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <input type="text" id="txtPHONE" name="PHONE" value="@Model.PHONE" class="form-control" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Email :</label>
+                        <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                            <input type="text" id="txtEMAIL" name="EMAIL" value="@Model.EMAIL" class="form-control" maxlength="50">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+     window.applicationBaseUrl = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+    new Uri(new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+        Url.Content("~/")
+    ).ToString(), true));
+
+    $(document).ready(function () {
+        //Set Textbox to to Readonly
+        if (txtID.value != "") {
+            $(".sRead").prop("readonly", true);
+        }
+    });
+
+    $("#btn_add").click(function () {
+        fCRUD('Add', 'RecipeManagementSystem/RecipeManagementSystem/AddVendor_Chk', 'RecipeManagementSystem/RecipeManagementSystem/AddVendor', "#form1", 'RecipeManagementSystem/RecipeManagementSystem/VendorData?VendorID=' + txtID.value + '&page=@Request.QueryString["page"]&search=@Request.QueryString["search"]&type=E');
+        return false;
+    });
+
+    $("#btn_update").click(function () {
+        fCRUD('Update', 'RecipeManagementSystem/RecipeManagementSystem/UpdateVendor_Chk', 'RecipeManagementSystem/RecipeManagementSystem/UpdateVendor', "#form1", 'RecipeManagementSystem/RecipeManagementSystem/VendorData?VendorID=@Model.ID&page=@Request.QueryString["page"]&search=@Request.QueryString["search"]&type=E');
+        return false;
+    });
+
+</script>

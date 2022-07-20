@@ -127,6 +127,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\FoodMenuSystem\Models\Ingredient.cs" />
+    <Compile Include="Areas\RecipeManagementSystem\Controllers\RecipeManagementSystemController.cs" />
+    <Compile Include="Areas\RecipeManagementSystem\Controllers\RecipeManagementSystem_axController.cs" />
+    <Compile Include="Areas\RecipeManagementSystem\Models\Vendor.cs" />
+    <Compile Include="Areas\RecipeManagementSystem\RecipeManagementSystemAreaRegistration.cs" />
+    <Compile Include="Areas\RecipeManagementSystem\Models\PurchaseOrder.cs" />
+    <Compile Include="Areas\RecipeManagementSystem\Models\PurchaseOrderDet.cs" />
     <Compile Include="Areas\FoodOrderingSystem\Controllers\FoodOrderingSystemController.cs" />
     <Compile Include="Areas\FoodOrderingSystem\Controllers\FoodOrderingSystem_axController.cs" />
     <Compile Include="Areas\FoodOrderingSystem\Models\OrderDet.cs" />
@@ -318,6 +324,17 @@
     <Content Include="Areas\MyInfo\Views\MyProfile\MyCustomerListing.cshtml" />
     <Content Include="Areas\MyInfo\Views\MyProfile_ax\ax_Customer.cshtml" />
     <Content Include="Areas\FoodMenuSystem\Views\FoodMenuSystem_ax\ax_Ingredient.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem\PurchaseOrderContent.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem\PurchaseOrderHeader.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem\PurchaseOrderJS.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem\PurchaseOrderListing.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem_ax\ax_PurchaseOrder.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem_ax\ax_PurchaseOrderDet.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\web.config" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem\VendorListing.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem\VendorData.cshtml" />
+    <Content Include="Areas\RecipeManagementSystem\Views\RecipeManagementSystem_ax\ax_Vendor.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\common_OLD.js" />
@@ -359,6 +376,7 @@
     <Content Include="Views\UserLogin\Register.cshtml" />
     <Content Include="Views\SearchForm\ax_view_Food.cshtml" />
     <Content Include="Views\SearchForm\_ViewStart.cshtml" />
+    <Content Include="Views\SearchForm\ax_view_Vendor.cshtml" />
     <None Include="Views\SearchForm\ax_view_Ingredient.cshtml" />
   </ItemGroup>
   <ItemGroup>

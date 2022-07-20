@@ -8,32 +8,43 @@
                 <i class="pe-7s-angle-up-circle" style="color:#3d68e0;font-size:16px;"></i>
                 Detail
             </div>
-            <button type="button" class="btn btn-sm btn-info" id="btnD1_Add" style="float:right; border-radius:5px;width:80px;margin-left: auto;">
-                <i class="fas fa-plus"></i>
-                Add
-            </button>
+            @if (Session["_USERTYPE"].ToString().Equals("K"))
+            {
+                if (Model.STATUS != null)
+                {
+                    if (Model.STATUS != "D")
+                    {
+                        <button type="button" class="btn btn-sm btn-info" id="btnD1_Add" style="float:right; border-radius:5px;width:80px;margin-left: auto;">
+                            <i class="fas fa-plus"></i>
+                            Add
+                        </button>
+                    }
+                }
+            }
 
             <button type="button" class="btn btn-sm btn-danger" id="btnD1_Cancel" style="float:right; border-radius:5px;width:80px;display:none;margin-left: auto;">
                 <i class="fas fa-plus"></i>
                 Cancel
             </button>
 
-            @if (Model.STATUS != null)
+            @if (Session["_USERTYPE"].ToString().Equals("K"))
             {
-                if (Model.STATUS != "D")
+                if (Model.STATUS != null)
                 {
-                    <button type="button" class="btn btn-sm btn-success" id="btnD1_Save" style="float:right;border-radius:5px;width:80px;display:none;margin-left: 5px;">
-                        <i class="fas fa-save"></i>
-                        Save
-                    </button>
+                    if (Model.STATUS != "D")
+                    {
+                        <button type="button" class="btn btn-sm btn-success" id="btnD1_Save" style="float:right;border-radius:5px;width:80px;display:none;margin-left: 5px;">
+                            <i class="fas fa-save"></i>
+                            Save
+                        </button>
 
-                    <button type="button" class="btn btn-sm btn-success" id="btnD1_Update" style="float:right;border-radius:5px;width:80px;display:none;margin-left: 5px;">
-                        <i class="fas fa-save"></i>
-                        Update
-                    </button>
+                        <button type="button" class="btn btn-sm btn-success" id="btnD1_Update" style="float:right;border-radius:5px;width:80px;display:none;margin-left: 5px;">
+                            <i class="fas fa-save"></i>
+                            Update
+                        </button>
+                    }
                 }
             }
-
         </div>
         <div class="card-body" id="card_content" style="border-radius: 0px; ">
             <div class="box-body" id="form_content" style="display:none">
@@ -43,14 +54,14 @@
                 <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Rec# :</label>
                     <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                        <input type="text" id="FoodDetID" name="FoodDetID" value="" onKeyPress="return fValidate(event);" class="form-control" maxlength="3" readonly>
+                        <input type="text" id="FoodDetID" name="FoodDetID" value="" onKeyPress="return fValidate(event);" class="form-control" readonly>
                     </div>
                 </div>
 
                 <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Ingredient :</label>
                     <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                        <input type="text" id="IngredientID" name="IngredientID" value="" onKeyPress="return fValidate(event);" onblur="_INGREDIENT(this.value);" class="form-control" maxlength="22" tabindex="28">
+                        <input type="text" id="IngredientID" name="IngredientID" value="" onKeyPress="return fValidate(event);" onblur="_INGREDIENT(this.value);" class="form-control">
                         <a href="javascript:void(0);" class="input-group-prepend" style="text-decoration:none;">
                             <div class="input-group-text" id="btnINGREDIENT" onclick="fOpen('INGREDIENT','IngredientID','content_modal','#exampleModal')">
                                 <i class="fa fa-search"></i>
@@ -62,14 +73,14 @@
                 <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Description :</label>
                     <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                        <input type="text" id="IngredientDesc" name="IngredientDesc" value="" class="form-control sRead" maxlength="30" tabindex="29">
+                        <input type="text" id="IngredientDesc" name="IngredientDesc" value="" class="form-control sRead" maxlength="50">
                     </div>
                 </div>
 
                 <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Quantity :</label>
                     <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                        <input type="text" id="IngredientQty" name="IngredientQty" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,0);" class="form-control" style="text-align:right;" tabindex="33">
+                        <input type="text" id="IngredientQty" name="IngredientQty" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,0);" class="form-control" style="text-align:right;">
                     </div>
                 </div>
             </div>

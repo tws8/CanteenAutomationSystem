@@ -1,0 +1,82 @@
+﻿@{ Layout = null; }
+@using CanteenAutomationSystem.Include;
+@using System.Data;
+@model DataSet
+
+<style>
+    th {
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 13.5px;
+    }
+</style>
+
+<div class="col-sm-12" style="overflow:auto;padding:0px;margin:0px;">
+    <table id="PassTable" width="100%" class="table table-hover" style="background-color:white;">
+        <thead>
+            <tr>
+                <th width="10%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Purchase Order ID</span></th>
+                <th width="30%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Vendor</span></th>
+                <th width="20%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Total Price</span></th>
+                <th width="20%"><span class="badge badge-secondary" style="font-size:12px;padding:5px 20px">Status</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in Model.Tables[0].Rows)
+            {
+                //Encode URL symbols
+                string search = HttpUtility.UrlEncode(Proc.pConvStr(TempData["SEARCH"]));
+                string sID = HttpUtility.UrlEncode(Proc.pConvStr(row["PurchaseOrderID"]));
+                string url = "page=" + TempData["PAGE"] + "&search=" + search + "&PurchaseOrderID=" + sID + "&type=E";
+
+                <tr>
+                    <td><a href="@Url.Action("PurchaseOrderJS", null, new { area = "RecipeManagementSystem", controller = "RecipeManagementSystem" })?@url" style="text-decoration:none;">@row["PurchaseOrderID"]</a></td>
+                    <td>
+                        @{
+                            using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
+                            {
+                                int iVendor = CanteenAutomationSystem.Include.Proc.pConvInt(row["Vendor"]);
+                                HtmlString htmlVendorName;
+                                if (context.Vendors.Where(x => x.VendorID.Equals(iVendor)).Any())
+                                {
+                                    htmlVendorName = new HtmlString(context.Vendors.Where(x => x.VendorID.Equals(iVendor)).Select(x => x.VendorName).First());
+                                    @htmlVendorName
+                                }
+                            }
+                        }
+
+                    </td>
+                    <td>@row["TotalPrice"]</td>
+                    @switch (row["Status"].ToString())
+                    {
+                        case "A":
+                            <td>Active</td>
+                            break;
+                        case "C":
+                            <td>Closed</td>
+                            break;
+                        case "S":
+                            <td>Approved and Release (Buyer can release PO)</td>
+                            break;
+                        case "P":
+                            <td>Rejected</td>
+                            break;
+                        case "R":
+                            <td>Requesting for Approval</td>
+                            break;
+                        case "D":
+                            <td>Deleted</td>
+                            break;
+                        default:
+                            <td></td>
+                            break;
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@Html.Partial("_VwPaging")

@@ -10,7 +10,7 @@ namespace CanteenAutomationSystem.Areas.FoodMenuSystem.Models
         public Int32 ID { get; set; }
 
         [Required(ErrorMessage = "Please enter Description.")]
-        [StringLength(20)]
+        [StringLength(50)]
         public String DESC { get; set; }
 
         [Required(ErrorMessage = "Please enter Price.")]

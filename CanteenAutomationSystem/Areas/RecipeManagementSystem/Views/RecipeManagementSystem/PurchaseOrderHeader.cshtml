@@ -1,0 +1,139 @@
+﻿@model CanteenAutomationSystem.Areas.RecipeManagementSystem.Models.PurchaseOrder
+@using CanteenAutomationSystem.Include;
+
+<form id="form1" autocomplete="@TempData["gAUTOFILL"]" method="post" style="font-size:13px;">
+    <div class="row pb-3">
+        <div class="col-12">
+            <h4>
+                <b>Order Detail</b>
+                <a href="@Url.Action("PurchaseOrderListing", null, new { area = "RecipeManagementSystem", controller = "RecipeManagementSystem" })" class="btn btn-sm btn-default mr-1" style="float:right; border-radius:5px;width:80px;border:1px solid #c2d6d6;">
+                    <i class="fa fa-undo"></i>
+                    Back
+                </a>
+            </h4>
+        </div>
+    </div>
+
+    <div class="main-card mb-3 card" id="Card_HD">
+        <div class="card-header">
+            <input id="chk_HD" type="checkbox" hidden>
+
+            <div id="Card_Header_HD" class="card-header-title" style="border-radius:0px;cursor:pointer;">
+                <i class="pe-7s-angle-up-circle" style="color:#3d68e0;font-size:16px;"></i>
+                Header
+            </div>
+
+            <div class="btn-group" id="btn_group" style="float:right; border-radius:5px;margin-left: auto;">
+                @if (!TempData["TYPE"].ToString().Equals("N"))
+                {
+                    if (Session["_USERTYPE"].ToString().Equals("B"))
+                    {
+                        if (Model.STATUS.Equals("A"))
+                        {
+                            <button class="btn btn-sm btn-danger mr-1" id="btn_delete" style="float:right; border-radius:5px;">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+
+                            <button class="btn btn-sm btn-warning mr-1" id="btn_request" style="float:right; border-radius:5px;">
+                                <i class="fas fa-check"></i>
+                                Request for Approval
+                            </button>
+
+                            <button class="btn btn-sm btn-success mr-1" id="btn_update" style="float:right; border-radius:5px;">
+                                <i class="fas fa-save"></i>
+                                Update
+                            </button>
+                        }
+
+                        if (Model.STATUS.Equals("S"))
+                        {
+                            <button class="btn btn-sm btn-warning mr-1" id="btn_receive" style="float:right; border-radius:5px;">
+                                <i class="fas fa-check"></i>
+                                Receive and Close Purchase Order
+                            </button>
+                        }
+                    }
+
+                    if (Session["_USERTYPE"].ToString().Equals("M"))
+                    {
+                        if (Model.STATUS.Equals("R"))
+                        {
+                            <button class="btn btn-sm btn-danger mr-1" id="btn_reject" style="float:right; border-radius:5px;">
+                                <i class="fas fa-times"></i>
+                                Reject
+                            </button>
+
+                            <button class="btn btn-sm btn-warning mr-1" id="btn_approve" style="float:right; border-radius:5px;">
+                                <i class="fas fa-check"></i>
+                                Approve
+                            </button>
+                        }
+                    }
+                }
+                else
+                {
+                    if (Session["_USERTYPE"].ToString().Equals("B"))
+                    {
+                        <button class="btn btn-sm btn-success mr-1" id="btn_add" style="float:right; border-radius:5px;">
+                            <i class="fas fa-save"></i>
+                            Add
+                        </button>
+                    }
+                }
+            </div>
+
+        </div>
+
+        <input type="hidden" id="HidPageCont" value="@TempData["PAGECONT"]">
+        <input type="hidden" id="HidSearchCont" value="@TempData["SEARCHCONT"]">
+        <input type="hidden" id="HidREFNO" value="">    @*USE FOR IMPORT TO VERITY IS EDIT/NEW*@
+        <input type="hidden" id="HidID" value="@Model.ID">
+
+        <div id="Card_Body_HD" class="card-body">
+            <div class="box-body">
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">ID :</label>
+                    <div class="col-xl-3 col-lg-4 col-md-10 col-sm-12">
+                        <input type="text" id="txtID" name="ID" value="@Model.ID" class="form-control sRead">
+                    </div>
+                </div>
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Vendor :</label>
+                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="Vendor" name="Vendor" value="@Model.VENDOR" onKeyPress="return fValidate(event);" onblur="_VENDOR(this.value);" class="form-control">
+                        <a href="javascript:void(0);" class="input-group-prepend" style="text-decoration:none;">
+                            <div class="input-group-text" id="btnVENDOR" onclick="fOpen('VENDOR','Vendor','content_modal','#exampleModal')">
+                                <i class="fa fa-search"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Vendor Name :</label>
+                    <div class="col-xl-3 col-lg-4 col-md-10 col-sm-12">
+                        <input type="text" id="VendorName" name="VendorName" value="@Model.VENDORNAME" class="form-control sRead">
+                    </div>
+                </div>
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Total Price (@TempData["gCURR"]) :</label>
+                    <div class="col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="txtTOTPRICE" name="TOTPRICE" value="@Model.TOTPRICE" class="form-control sRead" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,@TempData["gDEC"]);">
+                    </div>
+                </div>
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-form-label">Status :</label>
+                    <div class="col-xl-4 col-lg-6 col-md-10 col-sm-12">
+                        <select class="form-control sRead" id="txtSTATUS" name="STATUS" style="pointer-events:none" disabled>
+                            <option value="A" @(Model.STATUS == "A" ? "selected" : "")>Active</option>
+                            <option value="R" @(Model.STATUS == "R" ? "selected" : "")>Requesting for Approval</option>
+                            <option value="C" @(Model.STATUS == "C" ? "selected" : "")>Closed</option>
+                            <option value="D" @(Model.STATUS == "D" ? "selected" : "")>Deleted</option>
+                            <option value="P" @(Model.STATUS == "P" ? "selected" : "")>Rejected</option>
+                            <option value="S" @(Model.STATUS == "S" ? "selected" : "")>Approved and Release (Buyer can release PO)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

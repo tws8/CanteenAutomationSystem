@@ -25,6 +25,12 @@ namespace CanteenAutomationSystem.Models
 
         public Decimal TotalPrice { get; set; }
 
+        public DateTime? OrderedDateTime { get; set; }
+
+        public DateTime? VerifiedDateTime { get; set; }
+
+        public DateTime? ReceivingDateTime { get; set; }
+
         [StringLength(1)]
         public String Status { get; set; }
 

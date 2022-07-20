@@ -23,7 +23,7 @@ namespace CanteenAutomationSystem.Models
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Food Description required")]
         [Column(TypeName = "VARCHAR")]
-        [StringLength(20)]
+        [StringLength(50)]
         public String FoodDesc { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Price required")]

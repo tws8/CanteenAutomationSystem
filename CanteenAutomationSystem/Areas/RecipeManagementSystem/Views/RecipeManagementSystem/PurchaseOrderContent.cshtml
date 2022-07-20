@@ -1,0 +1,117 @@
+﻿<form id="form2" method="post" style="font-size:13px;" autocomplete="@TempData["gAUTOFILL"]">
+    <div class="main-card mb-3 card" id="Card_D1" style="display:none">
+        <div class="card-header">
+
+            <input id="chk_D1" type="checkbox" hidden>
+
+            <div id="Card_Header_D1" class="card-header-title" style="border-radius:0px;cursor:pointer;">
+                <i class="pe-7s-angle-up-circle" style="color:#3d68e0;font-size:16px;"></i>
+                Detail
+            </div>
+
+            @{
+                if (Session["_USERTYPE"].ToString().Equals("B"))
+                {
+                    using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
+                    {
+                        int iID = Model.ID;
+                        if (context.PurchaseOrders.Where(x => x.PurchaseOrderID.Equals(iID)).Where(x => x.Status.Equals("A")).Any())
+                        {
+                            <button type="button" class="btn btn-sm btn-info" id="btnD1_Add" style="float:right; border-radius:5px;width:80px;margin-left: auto;">
+                                <i class="fas fa-plus"></i>
+                                Add
+                            </button>
+
+                        }
+                    }
+                }
+            }
+
+            <button type="button" class="btn btn-sm btn-danger" id="btnD1_Cancel" style="float:right; border-radius:5px;width:80px;display:none;margin-left: auto;">
+                <i class="fas fa-plus"></i>
+                Cancel
+            </button>
+
+            @{
+                if (Session["_USERTYPE"].ToString().Equals("B"))
+                {
+                    using (var context = new CanteenAutomationSystem.DAL.CanteenContext())
+                    {
+                        int iID = Model.ID;
+                        if (context.PurchaseOrders.Where(x => x.PurchaseOrderID.Equals(iID)).Where(x => x.Status.Equals("A")).Any())
+                        {
+                            <button type="button" class="btn btn-sm btn-success" id="btnD1_Save" style="float:right;border-radius:5px;width:80px;display:none;margin-left: 5px;">
+                                <i class="fas fa-save"></i>
+                                Save
+                            </button>
+
+                            <button type="button" class="btn btn-sm btn-success" id="btnD1_Update" style="float:right;border-radius:5px;width:80px;display:none;margin-left: 5px;">
+                                <i class="fas fa-save"></i>
+                                Update
+                            </button>
+
+                        }
+                    }
+                }
+            }
+
+
+        </div>
+        <div class="card-body" id="card_content" style="border-radius: 0px; ">
+            <div class="box-body" id="form_content" style="display:none">
+                <input type="hidden" id="HidD1_SUB" name="SUB">
+                <input type="hidden" id="HidD1_ID" name="ID" value="@Model.ID">
+
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Rec# :</label>
+                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="PurchaseOrderDetID" name="PurchaseOrderDetID" value="" onKeyPress="return fValidate(event);" class="form-control" readonly>
+                    </div>
+                </div>
+
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Ingredient :</label>
+                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="IngredientID" name="IngredientID" value="" onKeyPress="return fValidate(event);" onblur="_INGREDIENT(this.value);" class="form-control">
+                        <a href="javascript:void(0);" class="input-group-prepend" style="text-decoration:none;">
+                            <div class="input-group-text" id="btnINGREDIENT" onclick="fOpen('INGREDIENT','IngredientID','content_modal','#exampleModal')">
+                                <i class="fa fa-search"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Description :</label>
+                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="IngredientDesc" name="IngredientDesc" value="" class="form-control sRead">
+                    </div>
+                </div>
+
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Unit Price :</label>
+                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="UnitPrice" name="UnitPrice" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,2);_TOTPRICE(this.value, Quantity.value);" class="form-control">
+                    </div>
+                </div>
+
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Quantity :</label>
+                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="Quantity" name="Quantity" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,0);_TOTPRICE(this.value, UnitPrice.value);" class="form-control">
+                    </div>
+                </div>
+
+                <div class="position-relative row form-group">
+                    <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Total Price :</label>
+                    <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
+                        <input type="text" id="TotPrice" name="TotPrice" onKeyPress="return fValidatePrice(event);" onblur="fFormatDecBlur(this,2);" class="form-control sRead">
+                    </div>
+                </div>
+            </div>
+            <div id="VwContent_Detail" style="padding-top:10px;">
+                <!-- CONTENT HERE -->
+            </div>
+        </div>
+    </div>
+</form>

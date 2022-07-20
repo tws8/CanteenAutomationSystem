@@ -29,8 +29,6 @@
 
             }
 
-
-
             <button type="button" class="btn btn-sm btn-danger" id="btnD1_Cancel" style="float:right; border-radius:5px;width:80px;display:none;margin-left: auto;">
                 <i class="fas fa-plus"></i>
                 Cancel
@@ -70,14 +68,14 @@
                 <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Rec# :</label>
                     <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                        <input type="text" id="OrderDetID" name="OrderDetID" value="" onKeyPress="return fValidate(event);" class="form-control" maxlength="3" readonly>
+                        <input type="text" id="OrderDetID" name="OrderDetID" value="" onKeyPress="return fValidate(event);" class="form-control" readonly>
                     </div>
                 </div>
 
                 <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Food :</label>
                     <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                        <input type="text" id="FoodID" name="FoodID" value="" onKeyPress="return fValidate(event);" onblur="_FOOD(this.value);" class="form-control" maxlength="22" tabindex="28">
+                        <input type="text" id="FoodID" name="FoodID" value="" onKeyPress="return fValidate(event);" onblur="_FOOD(this.value);" class="form-control">
                         <a href="javascript:void(0);" class="input-group-prepend" style="text-decoration:none;">
                             <div class="input-group-text" id="btnFOOD" onclick="fOpen('FOOD','FoodID','content_modal','#exampleModal')">
                                 <i class="fa fa-search"></i>
@@ -89,7 +87,7 @@
                 <div class="position-relative row form-group">
                     <label class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-form-label">Description :</label>
                     <div class="input-group col-xl-4 col-lg-4 col-md-9 col-sm-12">
-                        <input type="text" id="FoodDesc" name="FoodDesc" value="" class="form-control sRead" maxlength="30" tabindex="29">
+                        <input type="text" id="FoodDesc" name="FoodDesc" value="" class="form-control sRead" maxlength="50">
                     </div>
                 </div>
 

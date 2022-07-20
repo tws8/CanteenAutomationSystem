@@ -10,10 +10,10 @@ namespace CanteenAutomationSystem.Areas.MyInfo.Models
         public String ID { get; set; }
 
         [Required(ErrorMessage = "Please enter Name.")]
-        [StringLength(30)]
+        [StringLength(50)]
         public String NAME { get; set; }
 
-        [StringLength(15)]
+        [StringLength(50)]
         public String TEL { get; set; }
 
         [StringLength(50)]

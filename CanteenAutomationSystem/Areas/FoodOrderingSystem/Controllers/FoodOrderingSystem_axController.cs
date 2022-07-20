@@ -80,7 +80,7 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
 
             using (var context = new CanteenContext())
             {
-                if(context.Orders.Where(x => x.OrderID.Equals(id)).Select(x => x.Status).Any())
+                if (context.Orders.Where(x => x.OrderID.Equals(id)).Select(x => x.Status).Any())
                 {
                     TempData["STATUS"] = context.Orders.Where(x => x.OrderID.Equals(id)).Select(x => x.Status).First();
                 }

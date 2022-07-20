@@ -17,7 +17,6 @@ namespace CanteenAutomationSystem.DAL
         public DbSet<BizDept> BizDepts { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<BizUser> BizUsers { get; set; }
-        public DbSet<Vendor> Vendors { get; set; }
         public DbSet<Category> Categorys { get; set; }
         public DbSet<Food> Foods { get; set; }
         public DbSet<FoodDet> FoodDets { get; set; }
@@ -27,6 +26,7 @@ namespace CanteenAutomationSystem.DAL
         public DbSet<Pay> Pays { get; set; }
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public DbSet<PurchaseOrderDet> PurchaseOrderDets { get; set; }
+        public DbSet<Vendor> Vendors { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

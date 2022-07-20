@@ -4,7 +4,7 @@
 
 <div class="row pb-3">
     <div class="col-md-6">
-        <h4><b>Food Menu System</b></h4>
+        <h4><b>Menu Listing</b></h4>
     </div>
     <div class="col-md-6 text-right">
         @if (Session["_USERTYPE"].ToString().Equals("C"))
@@ -42,7 +42,7 @@
                 <i class="fa fa-refresh fa-spin"></i> Reset All Quantity
             </a>
         }
-        else
+        else if(Session["_USERTYPE"].ToString().Equals("K"))
         {
             <a class="popup btn btn-sm btn-success text-white" style="float:right; border-radius:5px; margin-left:5px" onclick="goto('FoodMenuSystem/FoodMenuSystem/MenuJS')">
                 <i class="fa fa-plus"></i> Add New Food

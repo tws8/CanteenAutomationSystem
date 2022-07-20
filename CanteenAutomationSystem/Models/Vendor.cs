@@ -25,17 +25,15 @@ namespace CanteenAutomationSystem.Models
         [StringLength(50)]
         public String VendorName { get; set; }
 
-        [Phone]
         [Column(TypeName = "VARCHAR")]
-        [StringLength(15)]
+        [StringLength(50)]
         public String VendorContact { get; set; }
 
-        [EmailAddress]
         [Column(TypeName = "VARCHAR")]
         [StringLength(50)]
         public String VendorEmail { get; set; }
 
-        [ForeignKey("PurchaseOrderID")]
+        [ForeignKey("Vendor")]
         public virtual ICollection<PurchaseOrder> PurchaseOrders { get; set; }
     }
 }

@@ -10,11 +10,11 @@ namespace CanteenAutomationSystem.DAL
             var bizDept = new List<BizDept>()
             {
                 new BizDept{BizDeptID="A", BizDeptDesc="Administrator"},
-                new BizDept{BizDeptID="M", BizDeptDesc="Management"},
-                new BizDept{BizDeptID="K", BizDeptDesc="Kitchen Staff"},
+                new BizDept{BizDeptID="B", BizDeptDesc="Buyer Staff"},
                 new BizDept{BizDeptID="F", BizDeptDesc="Financial Staff"},
+                new BizDept{BizDeptID="K", BizDeptDesc="Kitchen Staff"},
+                new BizDept{BizDeptID="M", BizDeptDesc="Management"},
                 new BizDept{BizDeptID="R", BizDeptDesc="Receptionist Staff"},
-                new BizDept{BizDeptID="B", BizDeptDesc="Buyer Staff"}
             };
 
             bizDept.ForEach(x => context.BizDepts.Add(x));
@@ -22,7 +22,12 @@ namespace CanteenAutomationSystem.DAL
             
             var bizUsers = new List<BizUser>()
             {
-                new BizUser{BizUserID="ADMIN", BizUserPW="1/uHt3MTpjk=", BizUserName="Administrator", BizDeptID="A"}
+                new BizUser{BizUserID="ADMIN", BizUserPW="1/uHt3MTpjk=", BizUserName="Administrator", BizDeptID="A"},
+                new BizUser{BizUserID="BUYER", BizUserPW="lWOwPa5b4LM=", BizUserName="Buyer Staff", BizDeptID="B"},
+                new BizUser{BizUserID="FINANCE", BizUserPW="glUu08T4lcc=", BizUserName="Financial Staff", BizDeptID="F"},
+                new BizUser{BizUserID="KITCHEN", BizUserPW="pb5BJUtffok=", BizUserName="Kitchen Staff", BizDeptID="K"},
+                new BizUser{BizUserID="MANAGER", BizUserPW="fNbzLAIS3Pc=", BizUserName="Management", BizDeptID="M"},
+                new BizUser{BizUserID="RECEPTION", BizUserPW="91R9Ww4NyY0+jjEcQl2VoA==", BizUserName="Receptionist Staff", BizDeptID="R"},
             };
 
             bizUsers.ForEach(x => context.BizUsers.Add(x));
@@ -30,10 +35,18 @@ namespace CanteenAutomationSystem.DAL
 
             var customers = new List<Customer>()
             {
-                new Customer{CustID="ADMIN", CustPW="1/uHt3MTpjk=", CustName="Administrator", CustMemberStatus="Y", BalCredit=0}
+                new Customer{CustID="CUST", CustPW="rPx5pIzrfro=", CustName="Customer", CustMemberStatus="N", BalCredit=0},
             };
 
             customers.ForEach(x => context.Customers.Add(x));
+            context.SaveChanges();
+
+            var vendors = new List<Vendor>()
+            {
+                new Vendor{VendorID=1, VendorName="AEON"}
+            };
+
+            vendors.ForEach(x => context.Vendors.Add(x));
             context.SaveChanges();
 
             var categorys = new List<Category>()

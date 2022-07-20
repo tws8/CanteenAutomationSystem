@@ -31,34 +31,41 @@
                 string search = HttpUtility.UrlEncode(Proc.pConvStr(TempData["SEARCH"]));
                 string sID = HttpUtility.UrlEncode(Proc.pConvStr(row["OrderID"]));
                 string url = "page=" + TempData["PAGE"] + "&search=" + search + "&OrderID=" + sID + "&type=E";
-                
-            <tr>
-                <td><a href="@Url.Action("OrderJS", null, new { area = "FoodOrderingSystem", controller = "FoodOrderingSystem" })?@url" style="text-decoration:none;">@row["OrderID"]</a></td>
-                <td>@row["TotalPrice"]</td>
-                <td>@row["Discount"]</td>
-                <td>@row["ActPrice"]</td>
-                @switch (row["Status"].ToString())
+
+                if (Session["_USERTYPE"].ToString().Equals("A") || Session["_USERTYPE"].ToString().Equals("M") || Session["_USERTYPE"].ToString().Equals("C") || (Session["_USERTYPE"].ToString().Equals("K") && (row["Status"].ToString().Equals("P"))))
                 {
-                    case "C":
-                        <td>Confirmed</td>
-                        break;
-                    case "E":
-                        <td>Closed</td>
-                        break;
-                    case "P":
-                        <td>Paid and Preparing</td>
-                        break;
-                    case "R":
-                        <td>Ready</td>
-                        break;
-                    case "D":
-                        <td>Deleted</td>
-                        break;
-                    default:
-                        <td></td>
-                        break;
+                    <tr>
+                        <td><a href="@Url.Action("OrderJS", null, new { area = "FoodOrderingSystem", controller = "FoodOrderingSystem" })?@url" style="text-decoration:none;">@row["OrderID"]</a></td>
+                        <td>@row["TotalPrice"]</td>
+                        <td>@row["Discount"]</td>
+                        <td>@row["ActPrice"]</td>
+                        @switch (row["Status"].ToString())
+                        {
+                            case "A":
+                                <td>Active</td>
+                                break;
+                            case "C":
+                                <td>Closed</td>
+                                break;
+                            case "P":
+                                <td>Confirmed and Paid</td>
+                                break;
+                            case "K":
+                                <td>Order Preparing</td>
+                                break;
+                            case "R":
+                                <td>Ready</td>
+                                break;
+                            case "D":
+                                <td>Deleted</td>
+                                break;
+                            default:
+                                <td></td>
+                                break;
+                        }
+                    </tr>
                 }
-            </tr>
+            
             }
         </tbody>
     </table>

@@ -17,12 +17,36 @@
 
     //First time page load
     $(document).ready(function () {
-        //# Date picker
-        $("[date-picker]").datepicker({
-            format: "dd/mm/yyyy",
-            autoclose: true
-        })
-        $('.datepicker').addClass('DtPickerFormat');
+        if (document.getElementById('dtpDTORDDATETIME')) {
+            var date = new Date();
+            var dtTemp = date.getFullYear() + '-';
+            if (date.getMonth() + 1 < 10) {
+                dtTemp = dtTemp + '0';
+            }
+            dtTemp = dtTemp + (date.getMonth() + 1) + '-';
+            if (date.getDate() < 10) {
+                dtTemp = dtTemp + '0';
+            }
+            dtTemp = dtTemp + date.getDate() + 'T';
+            if (date.getHours() < 10) {
+                dtTemp = dtTemp + '0';
+            }
+            dtTemp = dtTemp + date.getHours() + ':';
+            if (date.getMinutes() < 10) {
+                dtTemp = dtTemp + '0';
+            }
+            dtTemp = dtTemp + date.getMinutes();
+            dtpDTORDDATETIME.value = dtTemp;
+
+            config = {
+                enableTime: true,
+                altInput: true,
+                altFormat: "F d, Y (G:i K)",
+            }
+            flatpickr("input[type=datetime-local]", config);
+            $(".input").prop("readonly", false);
+        }
+        
 
         //# Edit Record
         if (HidID.value != "") {
@@ -95,7 +119,7 @@
         var Url = "";
         var pSearch = "";
         var pCondition = false;
-        
+
         //Search Form Value
         if (txtSearchView != null && txtSearchView.value != "") {
             pSearch = txtSearchView.value;
@@ -396,18 +420,28 @@
             })
     }
 
-    $("#btn_add").click(function () {
-        fCRUD('Add', 'FoodOrderingSystem/FoodOrderingSystem/AddOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/AddOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
-        return false;
-    });
-
     $("#btn_update").click(function () {
         fCRUD('Update', 'FoodOrderingSystem/FoodOrderingSystem/UpdateOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/UpdateOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
         return false;
     });
 
     $("#btn_confirm").click(function () {
-        fCRUD('Confirm and Pay', 'FoodOrderingSystem/FoodOrderingSystem/ConfirmOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/ConfirmOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/PayJS?PayID=@Model.ID&type=E');
+        fCRUD('Confirm and Pay', 'FoodOrderingSystem/FoodOrderingSystem/ConfirmOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/ConfirmOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
+        return false;
+    });
+
+    $("#btn_prepare").click(function () {
+        fCRUD('Prepare', 'FoodOrderingSystem/FoodOrderingSystem/PrepareOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/ConfirmOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
+        return false;
+    });
+
+    $("#btn_ready").click(function () {
+        fCRUD('Ready to Serve', 'FoodOrderingSystem/FoodOrderingSystem/ServeOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/ServeOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
+        return false;
+    });
+
+    $("#btn_deliver").click(function () {
+        fCRUD('Deliver', 'FoodOrderingSystem/FoodOrderingSystem/DeliverOrder_Chk', 'FoodOrderingSystem/FoodOrderingSystem/DeliverOrder', "#form1", 'FoodOrderingSystem/FoodOrderingSystem/OrderJS?OrderID=@Model.ID&type=E');
         return false;
     });
 

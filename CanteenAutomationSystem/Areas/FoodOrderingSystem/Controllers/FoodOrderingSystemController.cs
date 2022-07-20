@@ -70,28 +70,71 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
                     if (Request.QueryString["OrderID"] != null)
                     {
                         int iID = pConvInt(Request.QueryString["OrderID"]);
-                        if (context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Any())
-                        {
-                            Order_Recalculation(iID);
 
-                            var qOrderHeader = context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID));
+                        if (Session["_USERTYPE"].ToString().Equals("C"))
+                        {
+                            if (context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Any())
+                            {
+                                Order_Recalculation(iID);
+
+                                var qOrderHeader = context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID));
+
+                                iniTBL.ID = qOrderHeader.Select(x => x.OrderID).First();
+                                iniTBL.DELIVERY = qOrderHeader.Select(x => x.Delivery).First();
+                                iniTBL.TOTPRICE = qOrderHeader.Select(x => x.TotalPrice).First();
+                                iniTBL.DISCOUNT = qOrderHeader.Select(x => x.Discount).First();
+                                iniTBL.ACTPRICE = qOrderHeader.Select(x => x.ActPrice).First();
+                                if (qOrderHeader.Select(x => x.OrderedDateTime).First() != null)
+                                {
+                                    iniTBL.DTORDDATETIME = (DateTime)qOrderHeader.Select(x => x.OrderedDateTime).First();
+                                }
+                                if (qOrderHeader.Select(x => x.EstPreparedDateTime).First() != null)
+                                {
+                                    iniTBL.DTESTDATETIME = (DateTime)qOrderHeader.Select(x => x.EstPreparedDateTime).First();
+                                }
+                                if (qOrderHeader.Select(x => x.ActPreparedDateTime).First() != null)
+                                {
+                                    iniTBL.DTACTDATETIME = (DateTime)qOrderHeader.Select(x => x.ActPreparedDateTime).First();
+                                }
+                                if (qOrderHeader.Select(x => x.ActDeliveryDateTime).First() != null)
+                                {
+                                    iniTBL.DTDELDATETIME = (DateTime)qOrderHeader.Select(x => x.ActDeliveryDateTime).First();
+                                }
+                                iniTBL.STATUS = qOrderHeader.Select(x => x.Status).First();
+                            }
+                            else
+                            {
+                                var qOrderHeader = context.Orders.Where(x => x.Customer.Equals(sUserName)).OrderByDescending(x => x.OrderID);
+
+                                iniTBL.ID = qOrderHeader.Select(x => x.OrderID).First() + 1;
+                            }
+                        }
+                        else
+                        {
+                            var qOrderHeader = context.Orders.Where(x => x.OrderID.Equals(iID));
 
                             iniTBL.ID = qOrderHeader.Select(x => x.OrderID).First();
                             iniTBL.DELIVERY = qOrderHeader.Select(x => x.Delivery).First();
                             iniTBL.TOTPRICE = qOrderHeader.Select(x => x.TotalPrice).First();
                             iniTBL.DISCOUNT = qOrderHeader.Select(x => x.Discount).First();
                             iniTBL.ACTPRICE = qOrderHeader.Select(x => x.ActPrice).First();
-                            iniTBL.DTORDDATETIME = (DateTime)qOrderHeader.Select(x => x.OrderedDateTime).First();
-                            iniTBL.DTESTDATETIME = (DateTime)qOrderHeader.Select(x => x.EstPreparedDateTime).First();
-                            iniTBL.DTACTDATETIME = (DateTime)qOrderHeader.Select(x => x.ActPreparedDateTime).First();
-                            iniTBL.DTDELDATETIME = (DateTime)qOrderHeader.Select(x => x.ActDeliveryDateTime).First();
+                            if (qOrderHeader.Select(x => x.OrderedDateTime).First() != null)
+                            {
+                                iniTBL.DTORDDATETIME = (DateTime)qOrderHeader.Select(x => x.OrderedDateTime).First();
+                            }
+                            if (qOrderHeader.Select(x => x.EstPreparedDateTime).First() != null)
+                            {
+                                iniTBL.DTESTDATETIME = (DateTime)qOrderHeader.Select(x => x.EstPreparedDateTime).First();
+                            }
+                            if (qOrderHeader.Select(x => x.ActPreparedDateTime).First() != null)
+                            {
+                                iniTBL.DTACTDATETIME = (DateTime)qOrderHeader.Select(x => x.ActPreparedDateTime).First();
+                            }
+                            if (qOrderHeader.Select(x => x.ActDeliveryDateTime).First() != null)
+                            {
+                                iniTBL.DTDELDATETIME = (DateTime)qOrderHeader.Select(x => x.ActDeliveryDateTime).First();
+                            }
                             iniTBL.STATUS = qOrderHeader.Select(x => x.Status).First();
-                        }
-                        else
-                        {
-                            var qOrderHeader = context.Orders.Where(x => x.Customer.Equals(sUserName)).OrderByDescending(x => x.OrderID);
-
-                            iniTBL.ID = qOrderHeader.Select(x => x.OrderID).First() + 1;
                         }
                     }
                     else
@@ -225,11 +268,6 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
                             return Json(Ermsg("ID used"));
                         }
 
-                        if (!context.Customers.Where(x => x.CustID.Equals(sUserName)).Any())
-                        {
-                            return Json(Ermsg("Customer not found"));
-                        }
-
                         return Json("OK");
                     }
                 }
@@ -262,11 +300,6 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
                         if (!context.Orders.Where(x => x.Customer.Equals(sUserName)).Where(x => x.OrderID.Equals(iID)).Any())
                         {
                             return Json(Ermsg("ID not found or ID belongs to other Customer"));
-                        }
-
-                        if (!context.Customers.Where(x => x.CustID.Equals(sUserName)).Any())
-                        {
-                            return Json(Ermsg("Customer not found"));
                         }
 
                         return Json("OK");
@@ -373,6 +406,11 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
                 {
                     using (var context = new CanteenContext())
                     {
+                        if (!context.Orders.Where(x => x.OrderID.Equals(iID)).Any())
+                        {
+                            return Json(Ermsg("ID not found"));
+                        }
+
                         if (!context.Orders.Where(x => x.OrderID.Equals(iID)).Where(x => x.Status.Equals("P")).Any())
                         {
                             return Json(Ermsg("ID not found or Order not paid"));
@@ -406,9 +444,14 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
                 {
                     using (var context = new CanteenContext())
                     {
+                        if (!context.Orders.Where(x => x.OrderID.Equals(iID)).Any())
+                        {
+                            return Json(Ermsg("ID not found"));
+                        }
+
                         if (!context.Orders.Where(x => x.OrderID.Equals(iID)).Where(x => x.Status.Equals("K")).Any())
                         {
-                            return Json(Ermsg("ID not found or Order not preparing"));
+                            return Json(Ermsg("Order not preparing"));
                         }
 
                         return Json("OK");
@@ -439,9 +482,14 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
                 {
                     using (var context = new CanteenContext())
                     {
+                        if (!context.Orders.Where(x => x.OrderID.Equals(iID)).Any())
+                        {
+                            return Json(Ermsg("ID not found"));
+                        }
+
                         if (!context.Orders.Where(x => x.OrderID.Equals(iID)).Where(x => x.Status.Equals("R")).Any())
                         {
-                            return Json(Ermsg("ID not found or Order not ready"));
+                            return Json(Ermsg("Order not ready"));
                         }
 
                         return Json("OK");
@@ -517,7 +565,6 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
         public JsonResult UpdateOrder(Models.Order Order)
         {
             int iID = pConvInt(Order.ID);
-            string sPAY = pRTIN(Order.PAYMENT);
             string sDEL = pRTIN(Order.DELIVERY);
 
             try
@@ -637,7 +684,9 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
             {
                 using (var context = new CanteenContext())
                 {
+                    DateTime dtNow = DateTime.Now;
                     var foods = context.Orders.First(x => x.OrderID.Equals(iID));
+                    foods.ActDeliveryDateTime = dtNow;
                     foods.Status = "C";
                     context.SaveChanges();
 
@@ -764,10 +813,9 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Controllers
                 {
                     var orders = context.OrderDets.Where(x => x.OrderID.Equals(iID)).Where(x => x.OrderDetID.Equals(iNum)).First();
                     orders.Status = "D";
+                    context.SaveChanges();
 
                     Order_Recalculation(iID);
-
-                    context.SaveChanges();
 
                     return Json("OK");
                 }

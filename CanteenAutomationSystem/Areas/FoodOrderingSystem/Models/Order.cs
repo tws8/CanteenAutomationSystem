@@ -10,9 +10,6 @@ namespace CanteenAutomationSystem.Areas.FoodOrderingSystem.Models
         public Int32 ID { get; set; }
 
         [StringLength(1)]
-        public String PAYMENT { get; set; }
-
-        [StringLength(1)]
         public String DELIVERY { get; set; }
 
         [Required(ErrorMessage = "Please enter Total Price.")]
