@@ -32,7 +32,7 @@
                 string sID = HttpUtility.UrlEncode(Proc.pConvStr(row["OrderID"]));
                 string url = "page=" + TempData["PAGE"] + "&search=" + search + "&OrderID=" + sID + "&type=E";
 
-                if (Session["_USERTYPE"].ToString().Equals("A") || Session["_USERTYPE"].ToString().Equals("M") || Session["_USERTYPE"].ToString().Equals("C") || (Session["_USERTYPE"].ToString().Equals("K") && (row["Status"].ToString().Equals("P"))))
+                if (Session["_USERTYPE"].ToString().Equals("A") || Session["_USERTYPE"].ToString().Equals("M") || Session["_USERTYPE"].ToString().Equals("C") || (Session["_USERTYPE"].ToString().Equals("R") && (row["Status"].ToString().Equals("P") || row["Status"].ToString().Equals("K")) || row["Status"].ToString().Equals("R")) || (Session["_USERTYPE"].ToString().Equals("K") && (row["Status"].ToString().Equals("P") || row["Status"].ToString().Equals("K"))))
                 {
                     <tr>
                         <td><a href="@Url.Action("OrderJS", null, new { area = "FoodOrderingSystem", controller = "FoodOrderingSystem" })?@url" style="text-decoration:none;">@row["OrderID"]</a></td>

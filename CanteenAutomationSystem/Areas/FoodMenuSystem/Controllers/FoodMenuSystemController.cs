@@ -549,7 +549,7 @@ namespace CanteenAutomationSystem.Areas.FoodMenuSystem.Controllers
                 {
                     gSetting = new gSetting();
                     string sUserName = pConvStr(Session["_USERNAME"]);
-                    int iNewOrder = (context.Orders.Where(x => x.Customer.Equals(sUserName)).Any() ? pConvInt(context.Orders.Where(x => x.Customer.Equals(sUserName)).OrderByDescending(x => x.OrderID).Select(x => x.OrderID).First()) + 1 : 1), iID, iNum = 1, iQty;
+                    int iNewOrder = (context.Orders.Any() ? pConvInt(context.Orders.OrderByDescending(x => x.OrderID).Select(x => x.OrderID).First()) + 1 : 1), iID, iNum = 1, iQty;
                     bool bFirst = true, bDiscount = context.Customers.Where(x => x.CustID.Equals(sUserName)).Select(x => x.CustMemberStatus).First().Equals("Y");
                     decimal dcUnitPrice, dcTotPrice;
 

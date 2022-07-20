@@ -371,6 +371,45 @@ namespace CanteenAutomationSystem.Areas.RecipeManagementSystem.Controllers
         }
 
         [HttpPost]
+        public JsonResult RequestPurchaseOrder_Chk(Models.PurchaseOrder Order)
+        {
+            IEnumerable<ModelError> allErrors;
+
+            if (ModelState.IsValid)
+            {
+                int iID = pConvInt(Order.ID);
+                decimal dcTotal = pConvDec(Order.TOTPRICE);
+
+                try
+                {
+                    using (var context = new CanteenContext())
+                    {
+                        if (!context.PurchaseOrders.Where(x => x.Status.Equals("A")).Where(x => x.PurchaseOrderID.Equals(iID)).Any())
+                        {
+                            return Json(Ermsg("ID not found or Purchase Order not allowed to request for approval"));
+                        }
+
+                        if (dcTotal.Equals(0))
+                        {
+                            return Json(Ermsg("Total Price is not allowed to be zero"));
+                        }
+
+                        return Json("OK");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(Ermsg(ex.Message));
+                }
+            }
+            else
+            {
+                allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                return Json(allErrors);
+            }
+        }
+
+        [HttpPost]
         public JsonResult VerifyPurchaseOrder_Chk(Models.PurchaseOrder Order)
         {
             IEnumerable<ModelError> allErrors;
@@ -598,8 +637,6 @@ namespace CanteenAutomationSystem.Areas.RecipeManagementSystem.Controllers
                     var purchaseOrders = context.PurchaseOrders.First(x => x.PurchaseOrderID.Equals(iID));
                     purchaseOrders.Vendor = iVENDOR;
                     context.SaveChanges();
-
-                    PurchaseOrder_Recalculation(iID);
 
                     return Json("OK");
                 }
